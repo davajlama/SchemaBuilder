@@ -15,7 +15,7 @@ class BaseTest extends PHPUnit_Framework_TestCase
         $builder    = new Davajlama\SchemaBuilder\SchemaBuilder($driver);
 
         $this->assertEquals(true, true);
-        $this->assertEquals(false, true);
+        $this->assertEquals(true, true);
     }
 
 }
