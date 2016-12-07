@@ -1,0 +1,11 @@
+{
+    "name": "davajlama/schemabuilder",
+    "description": "Database Schema Builder",
+    "authors": [
+        { "name": "David Bittner" }
+    ],
+
+    "autoload": {
+        "classmap": ["src/"]
+    }
+}
