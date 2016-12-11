@@ -51,6 +51,14 @@ class PatchList implements IteratorAggregate, Countable
     }
     
     /**
+     * @return Patch|null
+     */
+    public function first()
+    {
+        return reset($this->list);
+    }
+    
+    /**
      * @return Patch[]
      */
     public function toArray()
