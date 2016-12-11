@@ -6,8 +6,6 @@ notifications:
     email:
         recipients:
             - david.bittner@seznam.cz
-        on_success: always
-        on_failure: always
 
 before_script: composer install
 script: phpunit
