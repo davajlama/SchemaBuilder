@@ -35,34 +35,24 @@ class Generator
             }
         }
         
-        $columns[] = $this->createPrimaryColumn($primary);
+        $columns[] = $this->getTranslator()->transPrimaryKey($primary);
         
         foreach($table->getColumns() as $column) {
             if($column->isUnique()) {
-                $columns[] = $this->createUniqueColumn($column);
+                $columns[] = $this->getTranslator()->transUniqueKey($column->getName());
             }
         }
         
-        $header = "CREATE TABLE `{$table->getName()}`";
-        $footer = "ENGINE={$table->getEngine()} DEFAULT CHARSET={$table->getCharset()};";
+        $header = $this->getTranslator()->transCreateTableHeader($table->getName());
+        $footer = $this->getTranslator()->transCreateTableFooter($table->getEngine(), $table->getCharset());
         $body   = implode(', ', $columns);
         
-        $query = "$header ($body) $footer";
+        $query = $header . $body . $footer;
         
         $list = new \Davajlama\SchemaBuilder\PatchList();
         $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
         
         return $list;
-    }
-    
-    protected function createUniqueColumn(\Davajlama\SchemaBuilder\Schema\Column $column)
-    {
-        return "UNIQUE KEY `{$column->getName()}_UNIQUE` (`{$column->getName()}`)";
-    }
-    
-    protected function createPrimaryColumn(Array $names)
-    {
-        return 'PRIMARY KEY (`' . implode('`, `', $names) . '`)';
     }
     
     public function alterTablePatches(\Davajlama\SchemaBuilder\Schema\Table $table)

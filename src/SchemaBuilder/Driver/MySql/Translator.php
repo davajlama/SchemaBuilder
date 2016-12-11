@@ -40,6 +40,43 @@ class Translator
     }
     
     /**
+     * @param string $column
+     * @return string
+     */
+    public function transUniqueKey($column)
+    {
+        return "UNIQUE KEY `{$column}_UNIQUE` (`$column`)";
+    }
+    
+    /**
+     * @param string[] $columns
+     * @return string
+     */
+    public function transPrimaryKey(Array $columns)
+    {
+        return 'PRIMARY KEY (`' . implode('`, `', $columns) . '`)';
+    }
+    
+    /**
+     * @param string $table
+     * @return string
+     */
+    public function transCreateTableHeader($table)
+    {
+        return "CREATE TABLE `$table` (";
+    }
+
+    /**
+     * @param string $engine
+     * @param string $charset
+     * @return string
+     */
+    public function transCreateTableFooter($engine, $charset)
+    {
+        return ") ENGINE=$engine DEFAULT CHARSET=$charset;";
+    }
+    
+    /**
      * @param \Davajlama\SchemaBuilder\Schema\TypeInterface $type
      * @return string
      * @throws \Exception
