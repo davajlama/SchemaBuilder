@@ -130,6 +130,10 @@ class Translator
         return "DEFAULT $expr";
     }
     
+    /**
+     * @param Column $column
+     * @return string
+     */
     public function transColumn(Column $column)
     {
         $parts = [];
