@@ -8,5 +8,8 @@ notifications:
         recipients:
             - david.bittner@seznam.cz
 
-before_script: composer install
+before_script: 
+    - curl -s -o $HOME/.phpenv/versions/5.5/bin/phpunit https://phar.phpunit.de/phpunit.phar
+    - chmod +x $HOME/.phpenv/versions/5.5/bin/phpunit
+    - composer install
 script: phpunit
