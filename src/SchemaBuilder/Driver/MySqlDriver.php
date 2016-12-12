@@ -35,9 +35,18 @@ class MySqlDriver implements DriverInterface
         $this->adapter = $adapter;
     }
     
+    /**
+     * @param Schema $schema
+     * @return PatchList
+     */
     public function buildSchemaPatches(Schema $schema)
     {
+        $patches = new PatchList();
+        foreach($schema->getTables() as $table) {
+            $patches->addPatches($this->buildTablePatches($table));
+        }
         
+        return $patches;
     }
 
     /**

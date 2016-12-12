@@ -28,7 +28,7 @@ class Generator
         $primary = [];
         $columns = [];
         foreach($table->getColumns() as $column) {
-            $columns[] = $this->getTranslator()->getColumn($column);
+            $columns[] = $this->getTranslator()->transColumn($column);
             
             if($column->isPrimary()) {
                 $primary[] = $column->getName();
@@ -90,7 +90,7 @@ class Generator
             $pos = ($before = $non['before']) ? "AFTER `{$before->getName()}`" : 'FIRST';
             
             $query = "ALTER TABLE `{$table->getName()}` ";
-            $query .= "ADD COLUMN " . $this->getTranslator()->getColumn($non['column']);
+            $query .= "ADD COLUMN " . $this->getTranslator()->transColumn($non['column']);
             $query .= " $pos;";
             
             $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
@@ -137,7 +137,7 @@ class Generator
         
         if($change) {
             $query = "ALTER TABLE `{$table->getName()}` ";
-            $query .= "CHANGE COLUMN `{$column->getName()}` " . $this->getTranslator()->getColumn($column);
+            $query .= "CHANGE COLUMN `{$column->getName()}` " . $this->getTranslator()->transColumn($column);
             $query .= ";";
             
             $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::BREAKABLE);

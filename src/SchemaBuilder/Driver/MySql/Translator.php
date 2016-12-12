@@ -2,6 +2,18 @@
 
 namespace Davajlama\SchemaBuilder\Driver\MySql;
 
+use Davajlama\SchemaBuilder\Schema\Column;
+use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
+use Davajlama\SchemaBuilder\Schema\Type\TextType;
+use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
+use Davajlama\SchemaBuilder\Schema\TypeInterface;
+use Davajlama\SchemaBuilder\Schema\Value\ExpressionValue;
+use Davajlama\SchemaBuilder\Schema\Value\NullValue;
+use Davajlama\SchemaBuilder\Schema\Value\NumberValue;
+use Davajlama\SchemaBuilder\Schema\Value\StringValue;
+use Davajlama\SchemaBuilder\Schema\ValueInteraface;
+use Exception;
+
 /**
  * Description of Translator
  *
@@ -77,53 +89,58 @@ class Translator
     }
     
     /**
-     * @param \Davajlama\SchemaBuilder\Schema\TypeInterface $type
+     * @param TypeInterface $type
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
-    public function transType(\Davajlama\SchemaBuilder\Schema\TypeInterface $type)
+    public function transType(TypeInterface $type)
     {
         switch($class = get_class($type)) {
-            case \Davajlama\SchemaBuilder\Schema\Type\IntegerType::class : 
+            case IntegerType::class : 
                 return 'int(11)';
-            case \Davajlama\SchemaBuilder\Schema\Type\VarcharType::class : 
+            case VarcharType::class : 
                 return "VARCHAR({$type->getLength()})";
-            case \Davajlama\SchemaBuilder\Schema\Type\TextType::class :
+            case TextType::class :
                 return 'TEXT()';
             default:
-                throw new \Exception("Unknown column type [$class]");
+                throw new Exception("Unknown column type [$class]");
         }
     }
     
     /**
-     * @param \Davajlama\SchemaBuilder\Schema\ValueInteraface $value
+     * @param ValueInteraface $value
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
-    public function transDefaultValue(\Davajlama\SchemaBuilder\Schema\ValueInteraface $value)
+    public function transDefaultValue(ValueInteraface $value)
     {
         switch($class = get_class($value)) {
-            case \Davajlama\SchemaBuilder\Schema\Value\StringValue::class : 
+            case StringValue::class : 
                 $expr = "'{$value->getValue()}'"; break;
-            case \Davajlama\SchemaBuilder\Schema\Value\NumberValue::class :
+            case NumberValue::class :
                 $expr = $value->getValue(); break;
-            case \Davajlama\SchemaBuilder\Schema\Value\ExpressionValue::class :
+            case ExpressionValue::class :
                 $expr = $value->getValue(); break;
-            case \Davajlama\SchemaBuilder\Schema\Value\NullValue::class :
+            case NullValue::class :
                 $expr = 'NULL'; break;
             default:
-                throw new \Exception("Unknown column default value [$class]");
+                throw new Exception("Unknown column default value [$class]");
         }
         
         return "DEFAULT $expr";
     }
     
-    public function getColumn(\Davajlama\SchemaBuilder\Schema\Column $column)
+    public function transColumn(Column $column)
     {
         $parts = [];
         $parts[] = "`{$column->getName()}`";
         $parts[] = $this->transType($column->getType());
-        $parts[] = $column->isNullable() && !$column->isPrimary() ? $this->transDefaultValue($column->getDefault()) : 'NOT NULL';
+        $parts[] = $column->isPrimary() || !$column->isNullable() ? 'NOT NULL' : null;
+        
+        if(!$column->isPrimary() && !($column->getDefault() instanceof NullValue && !$column->isNullable())) {
+            $parts[] = $this->transDefaultValue($column->getDefault());
+        }
+        
         $parts[] = $column->isAutoincrement() ? 'AUTO_INCREMENT' : null;
 
         return implode(' ', array_filter($parts));

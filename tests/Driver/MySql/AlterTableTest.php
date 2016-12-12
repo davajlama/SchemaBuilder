@@ -22,7 +22,6 @@ class AlterTableTest extends TestCase
     
     public function testAlterTableArticles()
     {
-        
         $table = new Table('articles');
         $table->createColumn('id', new IntegerType())
                     ->primary()
@@ -52,8 +51,6 @@ class AlterTableTest extends TestCase
         
         $driver = new MySqlDriver($adapter);
         $patches = $driver->buildTablePatches($table);
-        
-        //var_dump($patches);exit;
         
         $this->assertTrue($patches instanceof PatchList);
         $this->assertSame(3, $patches->count());
