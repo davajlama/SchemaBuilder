@@ -9,7 +9,7 @@ notifications:
             - david.bittner@seznam.cz
 
 before_script: 
-    - curl -s -o $HOME/.phpenv/versions/5.5/bin/phpunit https://phar.phpunit.de/phpunit.phar
-    - chmod +x $HOME/.phpenv/versions/5.5/bin/phpunit
+    - curl -s -o $HOME/.phpenv/versions/5.6/bin/phpunit https://phar.phpunit.de/phpunit.phar
+    - chmod +x $HOME/.phpenv/versions/5.6/bin/phpunit
     - composer install
 script: phpunit
