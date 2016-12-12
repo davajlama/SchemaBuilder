@@ -90,7 +90,7 @@ class Generator
             $pos = ($before = $non['before']) ? "AFTER `{$before->getName()}`" : 'FIRST';
             
             $query = "ALTER TABLE `{$table->getName()}` ";
-            $query .= "ADD COLUMN " . $this->getTranslator()->getColumn($column);
+            $query .= "ADD COLUMN " . $this->getTranslator()->getColumn($non['column']);
             $query .= " $pos;";
             
             $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
@@ -101,7 +101,7 @@ class Generator
             $query .= "DROP COLUMN `{$row['Field']}`";
             $query .= ";";
             
-            $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
+            $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::BREAKABLE);
         }
         
         return $list;
@@ -116,7 +116,7 @@ class Generator
         $change         = false;
         
         $type = $row['Type'];
-        if($type !== $this->getTranslator()->getType($column->getType())) {
+        if($type !== $this->getTranslator()->transType($column->getType())) {
             $change = true;
         }
         
