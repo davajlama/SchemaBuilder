@@ -7,7 +7,7 @@ namespace Davajlama\SchemaBuilder\Test;
  *
  * @author David Bittner <david.bittner@seznam.cz>
  */
-class TestCase extends \PHPUnit\Framework\TestCase
+class TestCase extends \PHPUnit_Framework_TestCase
 {
     
     public function multipleWith(Array $withs)
@@ -35,7 +35,7 @@ class MultipleReturn
     /** @var \PHPUnit\Framework\TestCase */
     private $test;
     
-    public function __construct(\PHPUnit\Framework\TestCase $test)
+    public function __construct(\PHPUnit_Framework_TestCase $test)
     {
         $this->test = $test;
     }
