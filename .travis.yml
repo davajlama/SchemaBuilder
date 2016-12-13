@@ -7,8 +7,7 @@ services:
     - mysql
     
 env:
-    - TESTDSN=mysql:host=localhost;dbname=schemabuilder_tests
-    - TESTUSER=root
+    - TESTDSN=mysql:host=localhost;dbname=schemabuilder_tests TESTUSER=root
 
 notifications:
     email:
