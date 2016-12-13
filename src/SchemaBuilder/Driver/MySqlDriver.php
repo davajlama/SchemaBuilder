@@ -70,14 +70,7 @@ class MySqlDriver implements DriverInterface
      */
     public function applyPatch(Patch $patch)
     {
-        // for testing
-        try {
-            $this->getAdapter()->query($patch->getQuery());
-        } catch (\Exception $e) {
-            var_dump($patch);
-            throw $e;
-        }
-        
+        $this->getAdapter()->query($patch->getQuery());
     }
     
     /**
