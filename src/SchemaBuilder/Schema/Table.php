@@ -82,5 +82,15 @@ class Table
         return $column;
     }
 
+    /**
+     * @param string $name
+     * @return Column
+     */
+    public function createId($name = 'id')
+    {
+        return $this->createColumn($name, new Type\IntegerType())
+                    ->primary()
+                    ->autoincrement();
+    }
+    
 }
-

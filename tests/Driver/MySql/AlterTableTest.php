@@ -43,7 +43,7 @@ class AlterTableTest extends TestCase
                         case "DESCRIBE articles" :
                             return [
                                 ['Field' => 'id',       'Type' => 'int(11)',        'Null' => 'NO',     'Key' => 'PRI', 'Default' => null, 'Extra' => 'auto_increment'],
-                                ['Field' => 'content',  'Type' => 'text()',         'Null' => 'YES',    'Key' => '',    'Default' => null, 'Extra' => ''],
+                                ['Field' => 'content',  'Type' => 'text',           'Null' => 'YES',    'Key' => '',    'Default' => null, 'Extra' => ''],
                                 ['Field' => 'name',     'Type' => 'varchar(255)',   'Null' => 'YES',    'Key' => '',    'Default' => null, 'Extra' => ''],
                             ];
                     }

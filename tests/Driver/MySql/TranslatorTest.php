@@ -3,7 +3,9 @@
 namespace Davajlama\SchemaBuilder\Test\Driver\MySql;
 
 use Davajlama\SchemaBuilder\Driver\MySql\Translator;
+use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
+use Davajlama\SchemaBuilder\Schema\Type\TextType;
 use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
 use Davajlama\SchemaBuilder\Schema\Value\ExpressionValue;
 use Davajlama\SchemaBuilder\Schema\Value\NullValue;
@@ -11,13 +13,14 @@ use Davajlama\SchemaBuilder\Schema\Value\NumberValue;
 use Davajlama\SchemaBuilder\Schema\Value\StringValue;
 use Davajlama\SchemaBuilder\Test\Fixture\FoobarType;
 use Davajlama\SchemaBuilder\Test\Fixture\FoobarValue;
+use Davajlama\SchemaBuilder\Test\TestCase;
 
 /**
  * Description of TranslatorTest
  *
  * @author David Bittner <david.bittner@seznam.cz>
  */
-class TranslatorTest extends \PHPUnit_Framework_TestCase
+class TranslatorTest extends TestCase
 {
 
     public function testTransAlterTableHeader()
@@ -82,6 +85,9 @@ class TranslatorTest extends \PHPUnit_Framework_TestCase
         $this->assertSame('VARCHAR(255)', $translator->transType(new VarcharType(255)));
         
         $this->assertSame('int(11)', $translator->transType(new IntegerType()));
+        
+        $this->assertSame('TEXT', $translator->transType(new TextType()));
+        $this->assertSame('DATETIME', $translator->transType(new DateTimeType()));
         
         $translator->transType(new FoobarType());
     }

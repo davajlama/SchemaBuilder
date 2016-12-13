@@ -3,6 +3,7 @@
 namespace Davajlama\SchemaBuilder\Driver\MySql;
 
 use Davajlama\SchemaBuilder\Schema\Column;
+use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
 use Davajlama\SchemaBuilder\Schema\Type\TextType;
 use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
@@ -101,7 +102,9 @@ class Translator
             case VarcharType::class : 
                 return "VARCHAR({$type->getLength()})";
             case TextType::class :
-                return 'TEXT()';
+                return 'TEXT';
+            case DateTimeType::class :
+                return 'DATETIME';
             default:
                 throw new Exception("Unknown column type [$class]");
         }

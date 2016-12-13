@@ -88,12 +88,21 @@ class Generator
         
         foreach($nonExists as $non) {
             $pos = ($before = $non['before']) ? "AFTER `{$before->getName()}`" : 'FIRST';
+            $col = $non['column'];
             
             $query = "ALTER TABLE `{$table->getName()}` ";
-            $query .= "ADD COLUMN " . $this->getTranslator()->transColumn($non['column']);
+            $query .= "ADD COLUMN " . $this->getTranslator()->transColumn($col);
             $query .= " $pos;";
             
             $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
+            
+            if($col->isUnique()) {
+                $query = "ALTER TABLE `{$table->getName()}` ";
+                $query .= "ADD UNIQUE INDEX `{$col->getName()}_UNIQUE` (`{$col->getName()}`)";
+                $query .= ";";
+                
+                $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
+            }
         }
         
         foreach($original as $row) {
@@ -116,7 +125,7 @@ class Generator
         $change         = false;
         
         $type = $row['Type'];
-        if($type !== $this->getTranslator()->transType($column->getType())) {
+        if(strtolower($type) !== strtolower($this->getTranslator()->transType($column->getType()))) {
             $change = true;
         }
         
@@ -155,6 +164,8 @@ class Generator
             $query .= ";";
             $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
         }
+        
+        return $list;
     }
     
     /**

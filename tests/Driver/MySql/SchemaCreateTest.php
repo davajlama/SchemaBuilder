@@ -56,11 +56,11 @@ class SchemaCreateTest extends \Davajlama\SchemaBuilder\Test\TestCase
                     ->autoincrement();
         
         $products->createColumn('name', new \Davajlama\SchemaBuilder\Schema\Type\VarcharType(255))
-                    ->setDefault(new \Davajlama\SchemaBuilder\Schema\Value\StringValue('New product #1'));
+                    ->setDefaultValue(new \Davajlama\SchemaBuilder\Schema\Value\StringValue('New product #1'));
         
         $products->createColumn('supplier', new \Davajlama\SchemaBuilder\Schema\Type\VarcharType(64))
                     ->nullable(false)
-                    ->setDefault(new \Davajlama\SchemaBuilder\Schema\Value\StringValue('Davajlama'));
+                    ->setDefaultValue(new \Davajlama\SchemaBuilder\Schema\Value\StringValue('Davajlama'));
                 
         
         $builder = new \Davajlama\SchemaBuilder\SchemaBuilder(new \Davajlama\SchemaBuilder\Driver\MySqlDriver($adapter));
@@ -73,7 +73,7 @@ class SchemaCreateTest extends \Davajlama\SchemaBuilder\Test\TestCase
         $sql = 'CREATE TABLE `articles` (';
         $sql .= '`id` int(11) NOT NULL AUTO_INCREMENT, ';
         $sql .= '`title` VARCHAR(255) DEFAULT NULL, ';
-        $sql .= '`content` TEXT() DEFAULT NULL, ';
+        $sql .= '`content` TEXT DEFAULT NULL, ';
         $sql .= 'PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
         
         $patch = $patches->first();

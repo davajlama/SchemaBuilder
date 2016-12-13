@@ -32,7 +32,7 @@ class Column
     private $autoincrement = false;
     
     /** @var ValueInteraface */
-    private $default;
+    private $defaultValue;
     
     /** @var string */
     private $comment;
@@ -41,7 +41,7 @@ class Column
     {
         $this->name = $name;
         $this->type = $type;
-        $this->default = new NullValue();
+        $this->defaultValue = new NullValue();
     }
 
     public function getName()
@@ -56,6 +56,7 @@ class Column
         
     public function primary($bool = true)
     {
+        $bool && $this->nullable(false);
         $this->primary = (bool)$bool;
         return $this;
     }
@@ -100,12 +101,12 @@ class Column
     
     public function getDefault()
     {
-        return $this->default;
+        return $this->defaultValue;
     }
 
-    public function setDefault(ValueInteraface $default)
+    public function setDefaultValue(ValueInteraface $value)
     {
-        $this->default = $default;
+        $this->defaultValue = $value;
         return $this;
     }
         
