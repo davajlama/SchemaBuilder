@@ -17,10 +17,12 @@ class SchemaTest extends TestCase
     private $adapter;
     
     public function testSchema()
-    {
-        if($this->getAdapter()) {
+    {        
+        if(getenv('TESTDSN') && getenv('TESTUSER')) {
             $this->createTest();
             $this->alterTest();
+        } else {
+            $this->markTestSkipped("Must set ENV VAR TESTDSN=dsn and TESTUSER=user");
         }
     }
     
@@ -201,19 +203,17 @@ class SchemaTest extends TestCase
     
     protected function getAdapter()
     {
-        return;
-        // only for test on localhost
         if($this->adapter === null) {
+            //$dsn = 'mysql:host=localhost;dbname=buildertests';
+            $dsn        = getenv('TESTDSN');
+            $username   = getenv('TESTUSER');
             
-            $dsn = 'mysql:host=localhost;dbname=buildertests';
-            $username = 'root';
-            $password = '';
             $options = array(
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
                 \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
             ); 
 
-            $pdo = new \PDO($dsn, $username, $password, $options);
+            $pdo = new \PDO($dsn, $username, null, $options);
             $this->adapter = new \Davajlama\SchemaBuilder\Bridge\PDOAdapter($pdo);
         }        
         

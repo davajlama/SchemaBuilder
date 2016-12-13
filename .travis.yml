@@ -3,12 +3,20 @@ sudo: false
 php:
     - 5.6.18
 
+services:
+    - mysql
+    
+env:
+    - TESTDSN=mysql:host=localhost;dbname=schemabuilder_tests
+    - TESTUSER=root
+
 notifications:
     email:
         recipients:
             - david.bittner@seznam.cz
 
 before_script: 
+    - mysql -e 'CREATE DATABASE schemabuilder_tests;'
     - composer install
 
-script: ./vendor/bin/phpunit
+script: ./vendor/bin/phpunit -v
