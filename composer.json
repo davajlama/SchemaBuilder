@@ -5,6 +5,10 @@
         { "name": "David Bittner" }
     ],
 
+    "require-dev": {
+        "phpunit/phpunit": "5.5.*"
+    },
+
     "autoload": {
         "classmap": ["src/"]
     }
