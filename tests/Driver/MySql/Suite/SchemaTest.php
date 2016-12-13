@@ -18,7 +18,7 @@ class SchemaTest extends TestCase
     
     public function testSchema()
     {        
-        if(getenv('TESTDSN') && getenv('TESTUSER')) {
+        if(getenv('TESTDSN') && getenv('TESTUSER') && getenv('TESTDB')) {
             $this->createTest();
             $this->alterTest();
         } else {
@@ -204,9 +204,11 @@ class SchemaTest extends TestCase
     protected function getAdapter()
     {
         if($this->adapter === null) {
-            //$dsn = 'mysql:host=localhost;dbname=buildertests';
-            $dsn        = getenv('TESTDSN');
+            $host       = getenv('TESTHOST');
             $username   = getenv('TESTUSER');
+            $schema     = getenv('TESTDB');
+            
+            $dsn = "mysql:host=$host;dbname=$schema";
             
             $options = array(
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
