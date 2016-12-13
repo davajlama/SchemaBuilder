@@ -57,7 +57,7 @@ class SchemaTest extends TestCase
         $sql .= '`login` VARCHAR(64) NOT NULL, ';
         $sql .= '`password` VARCHAR(64) NOT NULL, ';
         $sql .= '`name` VARCHAR(64) DEFAULT NULL, ';
-        $sql .= '`created` DATETIME DEFAULT 0, '; // for mysql default 0 ?
+        $sql .= '`created` DATETIME DEFAULT NULL, '; // for mysql default 0 ?
         $sql .= '`group` VARCHAR(32) NOT NULL DEFAULT \'admin\', ';
         $sql .= 'PRIMARY KEY (`id`), ';
         $sql .= 'UNIQUE KEY `login_UNIQUE` (`login`), ';
@@ -87,8 +87,8 @@ class SchemaTest extends TestCase
         $users->createColumn('login', Type::varcharType(64))->nullable(false)->unique();
         $users->createColumn('password', Type::varcharType(64))->nullable(false)->unique();
         $users->createColumn('name', Type::varcharType(64));
-        $users->createColumn('created', Type::dateTimeType())
-                    ->setDefaultValue(Schema\Value::numberValue(0)); // fix for mysql
+        $users->createColumn('created', Type::dateTimeType());
+                    //->setDefaultValue(Schema\Value::numberValue(0)); // fix for mysql
         
         $users->createColumn('group', Type::varcharType(32))
                     ->nullable(false)->setDefaultValue(Schema\Value::stringValue('admin'));
