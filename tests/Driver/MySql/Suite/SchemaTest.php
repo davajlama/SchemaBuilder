@@ -18,7 +18,7 @@ class SchemaTest extends TestCase
     
     public function testSchema()
     {        
-        if(getenv('TESTDSN') && getenv('TESTUSER') && getenv('TESTDB')) {
+        if(getenv('TESTHOST') && getenv('TESTUSER') && getenv('TESTDB')) {
             $this->createTest();
             $this->alterTest();
         } else {
