@@ -2,9 +2,17 @@
 
 namespace Davajlama\SchemaBuilder\Test\Driver\MySql\Suite;
 
+use Davajlama\SchemaBuilder\Adapter\AdapterInterface;
+use Davajlama\SchemaBuilder\Bridge\PDOAdapter;
+use Davajlama\SchemaBuilder\Driver\MySqlDriver;
+use Davajlama\SchemaBuilder\Patch;
+use Davajlama\SchemaBuilder\PatchList;
 use Davajlama\SchemaBuilder\Schema;
 use Davajlama\SchemaBuilder\Schema\Type;
+use Davajlama\SchemaBuilder\SchemaBuilder;
+use Davajlama\SchemaBuilder\SchemaCreator;
 use Davajlama\SchemaBuilder\Test\TestCase;
+use PDO;
 
 /**
  * Description of AlterSchema
@@ -13,7 +21,7 @@ use Davajlama\SchemaBuilder\Test\TestCase;
  */
 class SchemaTest extends TestCase
 {
-    /** @var \Davajlama\SchemaBuilder\Adapter\AdapterInterface */
+    /** @var AdapterInterface */
     private $adapter;
     
     public function testSchema()
@@ -22,20 +30,20 @@ class SchemaTest extends TestCase
             $this->createTest();
             $this->alterTest();
         } else {
-            $this->markTestSkipped("Must set ENV VAR TESTDSN=dsn and TESTUSER=user");
+            $this->markTestSkipped("Must set ENV VARS TESTHOST=host, TESTUSER=user and TESTDB=schema");
         }
     }
     
     protected function createTest()
     {
         $adapter    = $this->getAdapter();
-        $driver     = new \Davajlama\SchemaBuilder\Driver\MySqlDriver($adapter);
-        $builder    = new \Davajlama\SchemaBuilder\SchemaBuilder($driver);
-        $creator    = new \Davajlama\SchemaBuilder\SchemaCreator($driver);
+        $driver     = new MySqlDriver($adapter);
+        $builder    = new SchemaBuilder($driver);
+        $creator    = new SchemaCreator($driver);
         
         $patches = $builder->buildSchemaPatches($this->getOriginalSchema());
         
-        $this->assertTrue($patches instanceof \Davajlama\SchemaBuilder\PatchList);
+        $this->assertTrue($patches instanceof PatchList);
         $this->assertSame(2, $patches->count());
         
         // table articles
@@ -48,7 +56,7 @@ class SchemaTest extends TestCase
         $sql .= 'PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
         
         $patch = $patches->first();
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         $this->assertSame($sql, $patch->getQuery());
         
         // table users
@@ -64,7 +72,7 @@ class SchemaTest extends TestCase
         $sql .= 'UNIQUE KEY `password_UNIQUE` (`password`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
         
         $patch = $patches->next();
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         $this->assertSame($sql, $patch->getQuery());
         
         $creator->applyPatches($patches);
@@ -97,76 +105,76 @@ class SchemaTest extends TestCase
     public function alterTest()
     {
         $adapter    = $this->getAdapter();
-        $driver     = new \Davajlama\SchemaBuilder\Driver\MySqlDriver($adapter);
-        $builder    = new \Davajlama\SchemaBuilder\SchemaBuilder($driver);
-        $creator    = new \Davajlama\SchemaBuilder\SchemaCreator($driver);
+        $driver     = new MySqlDriver($adapter);
+        $builder    = new SchemaBuilder($driver);
+        $creator    = new SchemaCreator($driver);
         
         $patches = $builder->buildSchemaPatches($this->getUpdatedSchema());
         
-        $this->assertTrue($patches instanceof \Davajlama\SchemaBuilder\PatchList);
+        $this->assertTrue($patches instanceof PatchList);
         $this->assertSame(12, $patches->count());
         
         // table articles
         $patch = $patches->first();
         $sql = 'ALTER TABLE `articles` CHANGE COLUMN `author` `author` VARCHAR(255) DEFAULT NULL;';
         $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::BREAKABLE, $patch->getLevel());
         
         $patch = $patches->next();
         $sql = 'ALTER TABLE `articles` CHANGE COLUMN `content` `content` VARCHAR(255) DEFAULT NULL;';
         $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::BREAKABLE, $patch->getLevel());
         
         $patch = $patches->next();
         $sql = 'ALTER TABLE `articles` CHANGE COLUMN `created` `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;';
         $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::BREAKABLE, $patch->getLevel());
         
         $patch = $patches->next();
         $sql = 'ALTER TABLE `articles` ADD COLUMN `perex` VARCHAR(255) DEFAULT NULL AFTER `content`;';
         $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         
         $patch = $patches->next();
         $sql = 'ALTER TABLE `articles` DROP COLUMN `title`;';
         $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::BREAKABLE, $patch->getLevel());
         
         // table users
         $patch = $patches->next();
         $sql = 'ALTER TABLE `users` DROP INDEX `password_UNIQUE`;';
         $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         
         $patch = $patches->next();
         $sql = 'ALTER TABLE `users` CHANGE COLUMN `created` `created` DATETIME DEFAULT CURRENT_TIMESTAMP;';
         $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::BREAKABLE, $patch->getLevel());
         
         $patch = $patches->next();
         $sql = 'ALTER TABLE `users` CHANGE COLUMN `group` `group` VARCHAR(32) NOT NULL DEFAULT \'customer\';';
         $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::BREAKABLE, $patch->getLevel());
         
         $patch = $patches->next();
         $sql = 'ALTER TABLE `users` ADD COLUMN `firstname` VARCHAR(64) DEFAULT NULL AFTER `password`;';
         $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         
         $patch = $patches->next();
         $sql = 'ALTER TABLE `users` ADD COLUMN `lastname` VARCHAR(64) NOT NULL AFTER `firstname`;';
         $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         
         $patch = $patches->next();
         $sql = 'ALTER TABLE `users` ADD UNIQUE INDEX `lastname_UNIQUE` (`lastname`);';
         $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         
         $patch = $patches->next();
         $sql = 'ALTER TABLE `users` DROP COLUMN `name`;';
         $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::BREAKABLE, $patch->getLevel());
         
         $creator->applyPatches($patches);
     }
@@ -211,12 +219,12 @@ class SchemaTest extends TestCase
             $dsn = "mysql:host=$host;dbname=$schema";
             
             $options = array(
-                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-                \PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
             ); 
 
-            $pdo = new \PDO($dsn, $username, null, $options);
-            $this->adapter = new \Davajlama\SchemaBuilder\Bridge\PDOAdapter($pdo);
+            $pdo = new PDO($dsn, $username, null, $options);
+            $this->adapter = new PDOAdapter($pdo);
         }        
         
         return $this->adapter;
