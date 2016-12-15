@@ -2,15 +2,12 @@
 
 namespace Davajlama\SchemaBuilder\Test\Driver\MySql\Suite;
 
-use Davajlama\SchemaBuilder\Adapter\AdapterInterface;
-use Davajlama\SchemaBuilder\Bridge\PDOAdapter;
 use Davajlama\SchemaBuilder\Driver\MySqlDriver;
 use Davajlama\SchemaBuilder\Schema;
 use Davajlama\SchemaBuilder\Schema\Type;
 use Davajlama\SchemaBuilder\SchemaBuilder;
 use Davajlama\SchemaBuilder\SchemaCreator;
 use Davajlama\SchemaBuilder\Test\TestCase;
-use PDO;
 
 /**
  * Description of IndexesTest
@@ -19,8 +16,8 @@ use PDO;
  */
 class IndexesTest extends TestCase
 {
-    /** @var AdapterInterface */
-    private $adapter;
+    
+    use \Davajlama\SchemaBuilder\Test\MySqlAdapterProviderTrait;
     
     public function testIndexes()
     {
@@ -28,7 +25,7 @@ class IndexesTest extends TestCase
             $this->createTest();
             $this->alterTest();
         } else {
-            $this->markTestSkipped("Muset set ENV variables for DB connection");
+            $this->markTestSkipped("Must set ENV variables for DB connection");
         }
     }
     
@@ -92,27 +89,6 @@ class IndexesTest extends TestCase
                     ->addColumn('password'); // create unique index
         
         return $schema;
-    }
-    
-    protected function getAdapter()
-    {
-        if($this->adapter === null) {
-            $host       = getenv('TESTHOST');
-            $username   = getenv('TESTUSER');
-            $schema     = getenv('TESTDB');
-            
-            $dsn = "mysql:host=$host;dbname=$schema";
-            
-            $options = array(
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-            ); 
-
-            $pdo = new PDO($dsn, $username, null, $options);
-            $this->adapter = new PDOAdapter($pdo);
-        }        
-        
-        return $this->adapter;
     }
     
 }

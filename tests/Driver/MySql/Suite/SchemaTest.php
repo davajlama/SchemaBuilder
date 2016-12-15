@@ -2,8 +2,6 @@
 
 namespace Davajlama\SchemaBuilder\Test\Driver\MySql\Suite;
 
-use Davajlama\SchemaBuilder\Adapter\AdapterInterface;
-use Davajlama\SchemaBuilder\Bridge\PDOAdapter;
 use Davajlama\SchemaBuilder\Driver\MySqlDriver;
 use Davajlama\SchemaBuilder\Patch;
 use Davajlama\SchemaBuilder\PatchList;
@@ -12,7 +10,6 @@ use Davajlama\SchemaBuilder\Schema\Type;
 use Davajlama\SchemaBuilder\SchemaBuilder;
 use Davajlama\SchemaBuilder\SchemaCreator;
 use Davajlama\SchemaBuilder\Test\TestCase;
-use PDO;
 
 /**
  * Description of AlterSchema
@@ -21,16 +18,15 @@ use PDO;
  */
 class SchemaTest extends TestCase
 {
-    /** @var AdapterInterface */
-    private $adapter;
+    use \Davajlama\SchemaBuilder\Test\MySqlAdapterProviderTrait;
     
     public function testSchema()
     {        
-        if(getenv('TESTHOST') && getenv('TESTUSER') && getenv('TESTDB')) {
+        if($this->getAdapter()) {
             $this->createTest();
             $this->alterTest();
         } else {
-            $this->markTestSkipped("Must set ENV VARS TESTHOST=host, TESTUSER=user and TESTDB=schema");
+            $this->markTestSkipped("Must set ENV variables for DB connection");
         }
     }
     
@@ -208,25 +204,5 @@ class SchemaTest extends TestCase
         
         return $schema;
     }
-    
-    protected function getAdapter()
-    {
-        if($this->adapter === null) {
-            $host       = getenv('TESTHOST');
-            $username   = getenv('TESTUSER');
-            $schema     = getenv('TESTDB');
-            
-            $dsn = "mysql:host=$host;dbname=$schema";
-            
-            $options = array(
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
-            ); 
-
-            $pdo = new PDO($dsn, $username, null, $options);
-            $this->adapter = new PDOAdapter($pdo);
-        }        
-        
-        return $this->adapter;
-    }
+   
 }

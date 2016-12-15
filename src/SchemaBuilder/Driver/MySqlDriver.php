@@ -57,11 +57,11 @@ class MySqlDriver implements DriverInterface
     {
         $patches = new PatchList();
         if($this->getInspector()->existsTable($table->getName())) {
-            $patches->addPatches($this->getGenerator()->alterTablePatches($table));
+            $rawColumns = $this->getInspector()->describeTable($table->getName());
+            $patches->addPatches($this->getGenerator()->alterTablePatches($table, $rawColumns));
             
             $rawIndexes = $this->getInspector()->showIndexes($table->getName());
             $patches->addPatches($this->getGenerator()->alterIndexes($table, $rawIndexes));
-            
         } else {
             $patches->addPatches($this->getGenerator()->createTablePatches($table));
             $patches->addPatches($this->getGenerator()->createIndexes($table));

@@ -10,20 +10,9 @@ namespace Davajlama\SchemaBuilder\Driver\MySql;
  */
 class Generator
 {
-    /** @var \Davajlama\SchemaBuilder\Driver\MySql\Inspector */
-    private $inspector;
-    
     /** @var Translator */
     private $translator;
 
-    /**
-     * @param \Davajlama\SchemaBuilder\Driver\MySql\Inspector $inspector
-     */
-    public function __construct(\Davajlama\SchemaBuilder\Driver\MySql\Inspector $inspector)
-    {
-        $this->inspector = $inspector;
-    }
-    
     public function createTablePatches(\Davajlama\SchemaBuilder\Schema\Table $table)
     {
         $primary = [];
@@ -59,10 +48,10 @@ class Generator
         return $list;
     }
     
-    public function alterTablePatches(\Davajlama\SchemaBuilder\Schema\Table $table)
+    public function alterTablePatches(\Davajlama\SchemaBuilder\Schema\Table $table, Array $rawColumns)
     {
         $original = [];
-        foreach($this->getInspector()->describeTable($table->getName()) as $position => $row) {
+        foreach($rawColumns as $position => $row) {
             $row['Position'] = $position;
             $original[$row['Field']] = $row;
         }
@@ -271,14 +260,6 @@ class Generator
         }
         
         return $this->translator;
-    }
-    
-    /**
-     * @return Inspector
-     */
-    protected function getInspector()
-    {
-        return $this->inspector;
     }
     
 }
