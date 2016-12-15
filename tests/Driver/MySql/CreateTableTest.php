@@ -3,27 +3,24 @@
 namespace Davajlama\SchemaBuilder\Test\Driver\MySql;
 
 use Davajlama\SchemaBuilder\Driver\MySql\Generator;
-use Davajlama\SchemaBuilder\Driver\MySql\Inspector;
 use Davajlama\SchemaBuilder\Patch;
 use Davajlama\SchemaBuilder\PatchList;
 use Davajlama\SchemaBuilder\Schema\Table;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
 use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
-use Davajlama\SchemaBuilder\Test\Fixture\NullAdapter;
+use Davajlama\SchemaBuilder\Test\TestCase;
 
 /**
  * Description of CreateTableTest
  *
  * @author David Bittner <david.bittner@seznam.cz>
  */
-class CreateTableTest extends \Davajlama\SchemaBuilder\Test\TestCase
+class CreateTableTest extends TestCase
 {
  
     public function testCreateTableArticles()
     {
-        $adapter    = new NullAdapter();
-        $inspector  = new Inspector($adapter);
-        $generator  = new Generator($inspector);
+        $generator  = new Generator();
         
         $table = new Table('articles');
         $table->createColumn('id', new IntegerType())

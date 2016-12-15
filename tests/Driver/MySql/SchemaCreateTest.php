@@ -2,17 +2,29 @@
 
 namespace Davajlama\SchemaBuilder\Test\Driver\MySql;
 
+use Davajlama\SchemaBuilder\Adapter\AdapterInterface;
+use Davajlama\SchemaBuilder\Driver\MySqlDriver;
+use Davajlama\SchemaBuilder\Patch;
+use Davajlama\SchemaBuilder\PatchList;
+use Davajlama\SchemaBuilder\Schema;
+use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
+use Davajlama\SchemaBuilder\Schema\Type\TextType;
+use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
+use Davajlama\SchemaBuilder\Schema\Value\StringValue;
+use Davajlama\SchemaBuilder\SchemaBuilder;
+use Davajlama\SchemaBuilder\Test\TestCase;
+
 /**
  * Description of SchemaCreateTest
  *
  * @author David Bittner <david.bittner@seznam.cz>
  */
-class SchemaCreateTest extends \Davajlama\SchemaBuilder\Test\TestCase
+class SchemaCreateTest extends TestCase
 {
     
     public function testCreateSchema()
     {
-        $adapter = $this->createMock(\Davajlama\SchemaBuilder\Adapter\AdapterInterface::class);
+        $adapter = $this->createMock(AdapterInterface::class);
         $adapter->method('fetchAll')->with($this->multipleWith([
             "SHOW TABLES LIKE 'articles'",
             "DESCRIBE articles",
@@ -29,44 +41,44 @@ class SchemaCreateTest extends \Davajlama\SchemaBuilder\Test\TestCase
                 ->ret("DESCRIBE products", [])
                 ->toCallback());
         
-        $schema = new \Davajlama\SchemaBuilder\Schema();
+        $schema = new Schema();
         $articles = $schema->createTable('articles');
-        $articles->createColumn('id', new \Davajlama\SchemaBuilder\Schema\Type\IntegerType())
+        $articles->createColumn('id', new IntegerType())
                     ->primary()
                     ->autoincrement();
         
-        $articles->createColumn('title', new \Davajlama\SchemaBuilder\Schema\Type\VarcharType(255));
-        $articles->createColumn('content', new \Davajlama\SchemaBuilder\Schema\Type\TextType());
+        $articles->createColumn('title', new VarcharType(255));
+        $articles->createColumn('content', new TextType());
         
         $users = $schema->createTable('users');
-        $users->createColumn('id', new \Davajlama\SchemaBuilder\Schema\Type\IntegerType())
+        $users->createColumn('id', new IntegerType())
                     ->primary()
                     ->autoincrement();
         
-        $users->createColumn('username', new \Davajlama\SchemaBuilder\Schema\Type\VarcharType(64))
+        $users->createColumn('username', new VarcharType(64))
                     ->nullable(false)
                     ->unique();
         
-        $users->createColumn('password', new \Davajlama\SchemaBuilder\Schema\Type\VarcharType(64))
+        $users->createColumn('password', new VarcharType(64))
                     ->nullable(false);
         
         $products = $schema->createTable('products');
-        $products->createColumn('id', new \Davajlama\SchemaBuilder\Schema\Type\IntegerType())
+        $products->createColumn('id', new IntegerType())
                     ->primary()
                     ->autoincrement();
         
-        $products->createColumn('name', new \Davajlama\SchemaBuilder\Schema\Type\VarcharType(255))
-                    ->setDefaultValue(new \Davajlama\SchemaBuilder\Schema\Value\StringValue('New product #1'));
+        $products->createColumn('name', new VarcharType(255))
+                    ->setDefaultValue(new StringValue('New product #1'));
         
-        $products->createColumn('supplier', new \Davajlama\SchemaBuilder\Schema\Type\VarcharType(64))
+        $products->createColumn('supplier', new VarcharType(64))
                     ->nullable(false)
-                    ->setDefaultValue(new \Davajlama\SchemaBuilder\Schema\Value\StringValue('Davajlama'));
+                    ->setDefaultValue(new StringValue('Davajlama'));
                 
         
-        $builder = new \Davajlama\SchemaBuilder\SchemaBuilder(new \Davajlama\SchemaBuilder\Driver\MySqlDriver($adapter));
+        $builder = new SchemaBuilder(new MySqlDriver($adapter));
         $patches = $builder->buildSchemaPatches($schema);
         
-        $this->assertTrue($patches instanceof \Davajlama\SchemaBuilder\PatchList);
+        $this->assertTrue($patches instanceof PatchList);
         $this->assertSame(3, $patches->count());
         
         // table articles
@@ -77,7 +89,7 @@ class SchemaCreateTest extends \Davajlama\SchemaBuilder\Test\TestCase
         $sql .= 'PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
         
         $patch = $patches->first();
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         $this->assertSame($sql, $patch->getQuery());
         
         // table users
@@ -89,7 +101,7 @@ class SchemaCreateTest extends \Davajlama\SchemaBuilder\Test\TestCase
         $sql .= 'UNIQUE KEY `unique_username_asc` (`username`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
         
         $patch = $patches->next();
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         $this->assertSame($sql, $patch->getQuery());
         
         // table products
@@ -100,7 +112,7 @@ class SchemaCreateTest extends \Davajlama\SchemaBuilder\Test\TestCase
         $sql .= 'PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
         
         $patch = $patches->next();
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         $this->assertSame($sql, $patch->getQuery());
         
     }

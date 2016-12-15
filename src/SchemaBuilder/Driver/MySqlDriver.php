@@ -84,7 +84,7 @@ class MySqlDriver implements DriverInterface
     protected function getGenerator()
     {
         if($this->generator === null) {
-            $this->generator = new Generator($this->getInspector());
+            $this->generator = new Generator();
         }
         
         return $this->generator;

@@ -10,13 +10,8 @@ namespace Davajlama\SchemaBuilder\Test\Driver\MySql;
 class AlterIndexTest extends \Davajlama\SchemaBuilder\Test\TestCase
 {
     
-    
     public function testAlterIndexes()
     {
-        $adapter    = new \Davajlama\SchemaBuilder\Test\Fixture\NullAdapter();
-        $inspector  = new \Davajlama\SchemaBuilder\Driver\MySql\Inspector($adapter);
-        $generator  = new \Davajlama\SchemaBuilder\Driver\MySql\Generator($inspector);
-        
         $table = new \Davajlama\SchemaBuilder\Schema\Table('users');
         $table->createId();
         $table->createColumn('username', \Davajlama\SchemaBuilder\Schema\Type::varcharType(64))->unique();
@@ -64,7 +59,8 @@ class AlterIndexTest extends \Davajlama\SchemaBuilder\Test\TestCase
             ['Key_name' => 'unique_group_asc_role_asc',   'Non_unique' => 0, 'Column_name' => 'role'],
         ];
         
-        $patches = $generator->alterIndexes($table, $rawIndexes);
+        $generator  = new \Davajlama\SchemaBuilder\Driver\MySql\Generator();
+        $patches    = $generator->alterIndexes($table, $rawIndexes);
         
         //var_dump($patches);exit;
         

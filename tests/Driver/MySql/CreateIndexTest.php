@@ -2,11 +2,10 @@
 
 namespace Davajlama\SchemaBuilder\Test\Driver\MySql;
 
-use Davajlama\SchemaBuilder\Driver\MySqlDriver;
+use Davajlama\SchemaBuilder\Driver\MySql\Generator;
 use Davajlama\SchemaBuilder\Patch;
 use Davajlama\SchemaBuilder\Schema\Table;
 use Davajlama\SchemaBuilder\Schema\Type;
-use Davajlama\SchemaBuilder\Test\Fixture\NullAdapter;
 use Davajlama\SchemaBuilder\Test\TestCase;
 
 /**
@@ -19,9 +18,6 @@ class CreateIndexTest extends TestCase
 
     public function testCreateIndex()
     {
-        $adapter    = new NullAdapter();
-        $driver     = new MySqlDriver($adapter);
-        
         $table = new Table('articles');
         $table->createColumn('username', Type::varcharType(64));
         $table->createColumn('password', Type::varcharType(64));
@@ -55,13 +51,12 @@ class CreateIndexTest extends TestCase
                     ->addColumn('password');
         
         
-        $patches = $driver->buildTablePatches($table);
+        $generator  = new Generator();
+        $patches    = $generator->createIndexes($table);
         
-        $this->assertSame(7, $patches->count());
+        $this->assertSame(6, $patches->count());
         
-        $patches->first(); // CREATE TABLE STATEMENT
-        
-        $patch = $patches->next();
+        $patch = $patches->first();
         $sql = 'ALTER TABLE `articles` ADD INDEX `index_username_asc` (`username` ASC);';
         $this->assertSame($sql, $patch->getQuery());
         $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
