@@ -86,7 +86,7 @@ class SchemaCreateTest extends \Davajlama\SchemaBuilder\Test\TestCase
         $sql .= '`username` VARCHAR(64) NOT NULL, ';
         $sql .= '`password` VARCHAR(64) NOT NULL, ';
         $sql .= 'PRIMARY KEY (`id`), ';
-        $sql .= 'UNIQUE KEY `username_UNIQUE` (`username`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+        $sql .= 'UNIQUE KEY `unique_username_asc` (`username`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
         
         $patch = $patches->next();
         $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());

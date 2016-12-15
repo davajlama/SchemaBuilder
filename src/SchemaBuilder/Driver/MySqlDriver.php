@@ -55,11 +55,16 @@ class MySqlDriver implements DriverInterface
      */
     public function buildTablePatches(Table $table)
     {
-        $patches = null;
+        $patches = new PatchList();
         if($this->getInspector()->existsTable($table->getName())) {
-            $patches = $this->getGenerator()->alterTablePatches($table);
+            $patches->addPatches($this->getGenerator()->alterTablePatches($table));
+            
+            $rawIndexes = $this->getInspector()->showIndexes($table->getName());
+            $patches->addPatches($this->getGenerator()->alterIndexes($table, $rawIndexes));
+            
         } else {
-            $patches = $this->getGenerator()->createTablePatches($table);
+            $patches->addPatches($this->getGenerator()->createTablePatches($table));
+            $patches->addPatches($this->getGenerator()->createIndexes($table));
         }
         
         return $patches;

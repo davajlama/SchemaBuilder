@@ -68,8 +68,8 @@ class SchemaTest extends TestCase
         $sql .= '`created` DATETIME DEFAULT NULL, ';
         $sql .= '`group` VARCHAR(32) NOT NULL DEFAULT \'admin\', ';
         $sql .= 'PRIMARY KEY (`id`), ';
-        $sql .= 'UNIQUE KEY `login_UNIQUE` (`login`), ';
-        $sql .= 'UNIQUE KEY `password_UNIQUE` (`password`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+        $sql .= 'UNIQUE KEY `unique_login_asc` (`login`), ';
+        $sql .= 'UNIQUE KEY `unique_password_asc` (`password`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
         
         $patch = $patches->next();
         $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
@@ -140,12 +140,7 @@ class SchemaTest extends TestCase
         $this->assertSame($sql, $patch->getQuery());
         $this->assertSame(Patch::BREAKABLE, $patch->getLevel());
         
-        // table users
-        $patch = $patches->next();
-        $sql = 'ALTER TABLE `users` DROP INDEX `password_UNIQUE`;';
-        $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
-        
+        // table users                
         $patch = $patches->next();
         $sql = 'ALTER TABLE `users` CHANGE COLUMN `created` `created` DATETIME DEFAULT CURRENT_TIMESTAMP;';
         $this->assertSame($sql, $patch->getQuery());
@@ -167,14 +162,19 @@ class SchemaTest extends TestCase
         $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         
         $patch = $patches->next();
-        $sql = 'ALTER TABLE `users` ADD UNIQUE INDEX `lastname_UNIQUE` (`lastname`);';
+        $sql = 'ALTER TABLE `users` DROP COLUMN `name`;';
+        $this->assertSame($sql, $patch->getQuery());
+        $this->assertSame(Patch::BREAKABLE, $patch->getLevel());
+        
+        $patch = $patches->next();
+        $sql = 'ALTER TABLE `users` ADD UNIQUE INDEX `unique_lastname_asc` (`lastname` ASC);';
         $this->assertSame($sql, $patch->getQuery());
         $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         
         $patch = $patches->next();
-        $sql = 'ALTER TABLE `users` DROP COLUMN `name`;';
+        $sql = 'ALTER TABLE `users` DROP INDEX `unique_password_asc`;';
         $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(Patch::BREAKABLE, $patch->getLevel());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         
         $creator->applyPatches($patches);
     }

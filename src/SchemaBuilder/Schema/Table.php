@@ -21,6 +21,9 @@ class Table
     /** @var Column[] */
     private $columns = [];
     
+    /** @var Index[] */
+    private $indexes = [];
+    
     /**
      * @param string $name
      */
@@ -67,8 +70,17 @@ class Table
      */
     public function addColumn(Column $column)
     {
-        $this->columns[] = $column;
+        $this->columns[$column->getName()] = $column;
         return $this;
+    }
+    
+    /**
+     * @param string $name
+     * @return Column|null
+     */
+    public function getColumn($name)
+    {
+        return array_key_exists($name, $this->columns) ? $this->columns[$name] : null;
     }
     
     /**
@@ -91,6 +103,44 @@ class Table
         return $this->createColumn($name, new Type\IntegerType())
                     ->primary()
                     ->autoincrement();
+    }
+    
+    /**
+     * @param Index $index
+     * @return self
+     */
+    public function addIndex(Index $index)
+    {
+        $this->indexes[] = $index;
+        return $this;
+    }
+    
+    /**
+     * @param bool $unique
+     * @return Index
+     */
+    public function createIndex($unique = false)
+    {
+        $this->addIndex($index = new Index($unique));
+        return $index;
+    }
+    
+    /**
+     * @param string[] $columns
+     * @return Index
+     */
+    public function createUniqueIndex()
+    {
+        $this->addIndex($index = new Index(true));
+        return $index;
+    }
+    
+    /**
+     * @return Index[]
+     */
+    public function getIndexes()
+    {
+        return $this->indexes;
     }
     
 }

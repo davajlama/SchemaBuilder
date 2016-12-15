@@ -32,23 +32,22 @@ class AlterTableTest extends TestCase
         $table->createColumn('lastname', new VarcharType(255));
         
         $adapter = $this->createMock(AdapterInterface::class);
-        $adapter->method('fetchAll')->with($this->logicalOr(
-                $this->equalTo("SHOW TABLES LIKE 'articles'"),
-                $this->equalTo('DESCRIBE articles')
-                ))
-                ->will($this->returnCallback(function($input){
-                    switch($input) {
-                        case "SHOW TABLES LIKE 'articles'" :
-                            return ['articles'];
-                        case "DESCRIBE articles" :
-                            return [
-                                ['Field' => 'id',       'Type' => 'int(11)',        'Null' => 'NO',     'Key' => 'PRI', 'Default' => null, 'Extra' => 'auto_increment'],
-                                ['Field' => 'content',  'Type' => 'text',           'Null' => 'YES',    'Key' => '',    'Default' => null, 'Extra' => ''],
-                                ['Field' => 'name',     'Type' => 'varchar(255)',   'Null' => 'YES',    'Key' => '',    'Default' => null, 'Extra' => ''],
-                            ];
-                    }
-                }));
-        
+        $adapter->method('fetchAll')
+            ->with($this->multipleWith([
+                "SHOW TABLES LIKE 'articles'",
+                "DESCRIBE articles",
+                "SHOW INDEX FROM `articles`",
+            ]))
+            ->will($this->multipleReturn()
+            ->ret("DESCRIBE articles", [
+                ['Field' => 'id',       'Type' => 'int(11)',        'Null' => 'NO',     'Key' => 'PRI', 'Default' => null, 'Extra' => 'auto_increment'],
+                ['Field' => 'content',  'Type' => 'text',           'Null' => 'YES',    'Key' => '',    'Default' => null, 'Extra' => ''],
+                ['Field' => 'name',     'Type' => 'varchar(255)',   'Null' => 'YES',    'Key' => '',    'Default' => null, 'Extra' => ''],
+            ])
+            ->ret("SHOW TABLES LIKE 'articles'", ['articles'])
+            ->ret("SHOW INDEX FROM `articles`", [])
+            ->toCallback());
+         
         $driver = new MySqlDriver($adapter);
         $patches = $driver->buildTablePatches($table);
         

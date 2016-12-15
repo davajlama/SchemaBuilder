@@ -40,4 +40,13 @@ class Inspector
         return (bool)$this->adapter->fetchAll("SHOW TABLES LIKE '$name'");
     }
     
+    /**
+     * @param string $table
+     * @return array
+     */
+    public function showIndexes($table)
+    {
+        return $this->adapter->fetchAll("SHOW INDEX FROM `$table`");
+    }
+    
 }

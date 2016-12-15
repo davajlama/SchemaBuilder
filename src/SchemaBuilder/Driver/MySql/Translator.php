@@ -56,9 +56,9 @@ class Translator
      * @param string $column
      * @return string
      */
-    public function transUniqueKey($column)
+    public function transUniqueKey($name, $column)
     {
-        return "UNIQUE KEY `{$column}_UNIQUE` (`$column`)";
+        return "UNIQUE KEY `$name` (`$column`)";
     }
     
     /**

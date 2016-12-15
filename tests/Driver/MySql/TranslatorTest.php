@@ -49,8 +49,8 @@ class TranslatorTest extends TestCase
     public function testTransUniqueKey()
     {
         $translator = new Translator();
-        $this->assertSame('UNIQUE KEY `login_UNIQUE` (`login`)', $translator->transUniqueKey('login'));
-        $this->assertSame('UNIQUE KEY `remote_id_UNIQUE` (`remote_id`)', $translator->transUniqueKey('remote_id'));
+        $this->assertSame('UNIQUE KEY `unique_login_asc` (`login`)', $translator->transUniqueKey('unique_login_asc', 'login'));
+        $this->assertSame('UNIQUE KEY `unique_remote_id_asc` (`remote_id`)', $translator->transUniqueKey('unique_remote_id_asc', 'remote_id'));
     }
     
     public function testTransPrimaryKey()

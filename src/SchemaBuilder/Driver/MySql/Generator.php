@@ -6,6 +6,7 @@ namespace Davajlama\SchemaBuilder\Driver\MySql;
  * Description of Generator
  *
  * @author David Bittner <david.bittner@seznam.cz>
+ * @todo This class waiting for refactoring
  */
 class Generator
 {
@@ -35,11 +36,14 @@ class Generator
             }
         }
         
-        $columns[] = $this->getTranslator()->transPrimaryKey($primary);
+        if($primary) {
+            $columns[] = $this->getTranslator()->transPrimaryKey($primary);
+        }
         
         foreach($table->getColumns() as $column) {
             if($column->isUnique()) {
-                $columns[] = $this->getTranslator()->transUniqueKey($column->getName());
+                $name = $this->createIndexName([new \Davajlama\SchemaBuilder\Schema\IndexColumn($column->getName())], $column->isUnique());
+                $columns[] = $this->getTranslator()->transUniqueKey($name, $column->getName());
             }
         }
         
@@ -96,13 +100,14 @@ class Generator
             
             $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
             
-            if($col->isUnique()) {
+            /*if($col->isUnique()) {
+                $name = $this->createIndexName([new \Davajlama\SchemaBuilder\Schema\IndexColumn($col->getName())], $col->isUnique());
                 $query = "ALTER TABLE `{$table->getName()}` ";
-                $query .= "ADD UNIQUE INDEX `{$col->getName()}_UNIQUE` (`{$col->getName()}`)";
+                $query .= "ADD UNIQUE INDEX `$name` (`{$col->getName()}`)";
                 $query .= ";";
                 
                 $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
-            }
+            }*/
         }
         
         foreach($original as $row) {
@@ -134,17 +139,17 @@ class Generator
             $change = true;
         }
         
-        $unique = $row['Key'] === 'UNI';
+        /*$unique = $row['Key'] === 'UNI';
         if($unique !== $column->isUnique()) {
             $changeUnique = true;
-        }
+        }*/
         
         $default = $row['Default'];
         if($default !== $column->getDefault()->getValue()) {
             $change = true;
         }
         
-        if($change) {
+        if($change) {            
             $query = "ALTER TABLE `{$table->getName()}` ";
             $query .= "CHANGE COLUMN `{$column->getName()}` " . $this->getTranslator()->transColumn($column);
             $query .= ";";
@@ -152,20 +157,108 @@ class Generator
             $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::BREAKABLE);
         }
         
-        if($changeUnique) {
+        /*if($changeUnique) {
             
             $query = "ALTER TABLE `{$table->getName()}` ";
+            $name = $this->createIndexName([new \Davajlama\SchemaBuilder\Schema\IndexColumn($column->getName())], true);
             if($column->isUnique()) {
-                $query .= "ADD UNIQUE INDEX `{$column->getName()}_UNIQUE` (`{$column->getName()}`)";
+                $query .= "ADD UNIQUE INDEX `$name` (`{$column->getName()}`)";
             } else {
-                $query .= "DROP INDEX `{$column->getName()}_UNIQUE`";
+                $query .= "DROP INDEX `$name`";
             }
             
             $query .= ";";
             $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
+        }*/
+        
+        return $list;
+    }
+    
+    public function createIndexes(\Davajlama\SchemaBuilder\Schema\Table $table)
+    {
+        $list = new \Davajlama\SchemaBuilder\PatchList();
+        foreach($table->getIndexes() as $index) {
+            $list->addPatch($this->createIndex($table, $index));
         }
         
         return $list;
+    }
+    
+    public function alterIndexes(\Davajlama\SchemaBuilder\Schema\Table $table, Array $rawIndexes)
+    {
+        $list = new \Davajlama\SchemaBuilder\PatchList();
+        
+        $transformed = [];
+        foreach($rawIndexes as $row) {
+            $transformed[$row['Key_name']] = $row;
+        }
+        
+        $indexesNames = [];
+        foreach($table->getColumns() as $column) {
+            if($column->isPrimary()) {
+                $indexesNames['PRIMARY'] = true;
+            }
+            
+            if($column->isUnique()) {
+                $name = $this->createIndexName([new \Davajlama\SchemaBuilder\Schema\IndexColumn($column->getName())], true);
+                if(isset($transformed[$name])) {
+                    $indexesNames[$name] = true;
+                } else {
+                    $index = new \Davajlama\SchemaBuilder\Schema\Index(true);
+                    $index->addColumn($column->getName());
+                    $list->addPatch($this->createIndex($table, $index));
+                }
+            }
+        }
+        
+        foreach($table->getIndexes() as $index) {
+            $name = $this->createIndexName($index->getColumns(), $index->isUnique());
+            if(isset($indexesNames[$name]) || isset($transformed[$name])) {
+                continue;
+            } else {
+                $list->addPatch($this->createIndex($table, $index));
+                $indexesNames[$name] = true;
+            }
+        }
+        
+        foreach($transformed as $name => $ind) {
+            if(!isset($indexesNames[$name])) {
+                $query = "ALTER TABLE `{$table->getName()}` DROP INDEX `$name`;";
+                $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
+            }
+        }
+        
+        return $list;
+    }
+    
+    protected function createIndex(\Davajlama\SchemaBuilder\Schema\Table $table, \Davajlama\SchemaBuilder\Schema\Index $index)
+    {
+        $cols = [];
+        $name = $index->isUnique() ? 'unique' : 'index';
+        foreach($index->getColumns() as $column) {
+            $order = $column->isASC() ? 'ASC' : 'DESC';
+            $name .= '_' . $column->getName() . '_' . strtolower($order);
+            
+            $cols[] = "`{$column->getName()}` $order";
+        }
+
+        $unique = $index->isUnique() ? ' UNIQUE ' : ' ';
+        
+        $columns = implode(', ', $cols);
+        $sql = "ALTER TABLE `{$table->getName()}` ADD{$unique}INDEX `$name` ($columns);";
+        
+        return new \Davajlama\SchemaBuilder\Patch($sql, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
+    }
+    
+    protected function createIndexName(Array $columns, $unique)
+    {
+        $name = $unique ? 'unique' : 'index';
+        foreach($columns as $column) {
+            $order = $column->isASC() ? 'ASC' : 'DESC';
+            $name .= '_' . $column->getName() . '_' . strtolower($order);
+        }
+        
+        return $name;
     }
     
     /**
