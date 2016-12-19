@@ -12,7 +12,7 @@ use Davajlama\SchemaBuilder\Schema\Value\ExpressionValue;
 use Davajlama\SchemaBuilder\Schema\Value\NullValue;
 use Davajlama\SchemaBuilder\Schema\Value\NumberValue;
 use Davajlama\SchemaBuilder\Schema\Value\StringValue;
-use Davajlama\SchemaBuilder\Schema\ValueInteraface;
+use Davajlama\SchemaBuilder\Schema\ValueInterface;
 use Exception;
 
 /**
@@ -98,7 +98,7 @@ class Translator
     {
         switch($class = get_class($type)) {
             case IntegerType::class : 
-                return 'int(11)';
+                return 'INT(11)';
             case VarcharType::class : 
                 return "VARCHAR({$type->getLength()})";
             case TextType::class :
@@ -111,11 +111,11 @@ class Translator
     }
     
     /**
-     * @param ValueInteraface $value
+     * @param ValueInterface $value
      * @return string
      * @throws Exception
      */
-    public function transDefaultValue(ValueInteraface $value)
+    public function transDefaultValue(ValueInterface $value)
     {
         switch($class = get_class($value)) {
             case StringValue::class : 

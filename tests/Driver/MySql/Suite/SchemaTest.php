@@ -44,7 +44,7 @@ class SchemaTest extends TestCase
         
         // table articles
         $sql = 'CREATE TABLE `articles` (';
-        $sql .= '`id` int(11) NOT NULL AUTO_INCREMENT, ';
+        $sql .= '`id` INT(11) NOT NULL AUTO_INCREMENT, ';
         $sql .= '`author` VARCHAR(64) DEFAULT NULL, ';
         $sql .= '`content` TEXT DEFAULT NULL, ';
         $sql .= '`title` VARCHAR(255) DEFAULT NULL, ';
@@ -57,7 +57,7 @@ class SchemaTest extends TestCase
         
         // table users
         $sql = 'CREATE TABLE `users` (';
-        $sql .= '`id` int(11) NOT NULL AUTO_INCREMENT, ';
+        $sql .= '`id` INT(11) NOT NULL AUTO_INCREMENT, ';
         $sql .= '`login` VARCHAR(64) NOT NULL, ';
         $sql .= '`password` VARCHAR(64) NOT NULL, ';
         $sql .= '`name` VARCHAR(64) DEFAULT NULL, ';

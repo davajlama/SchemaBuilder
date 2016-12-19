@@ -7,7 +7,7 @@ namespace Davajlama\SchemaBuilder\Schema;
  *
  * @author David Bittner <david.bittner@seznam.cz>
  */
-interface ValueInteraface
+interface ValueInterface
 {
     
     /**

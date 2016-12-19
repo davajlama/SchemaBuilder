@@ -4,7 +4,7 @@ namespace Davajlama\SchemaBuilder\Schema;
 
 use Davajlama\SchemaBuilder\Schema\TypeInterface;
 use Davajlama\SchemaBuilder\Schema\Value\NullValue;
-use Davajlama\SchemaBuilder\Schema\ValueInteraface;
+use Davajlama\SchemaBuilder\Schema\ValueInterface;
 
 /**
  * Description of Column
@@ -31,7 +31,7 @@ class Column
     /** @var bool */
     private $autoincrement = false;
     
-    /** @var ValueInteraface */
+    /** @var ValueInterface */
     private $defaultValue;
     
     /** @var string */
@@ -104,7 +104,7 @@ class Column
         return $this->defaultValue;
     }
 
-    public function setDefaultValue(ValueInteraface $value)
+    public function setDefaultValue(ValueInterface $value)
     {
         $this->defaultValue = $value;
         return $this;

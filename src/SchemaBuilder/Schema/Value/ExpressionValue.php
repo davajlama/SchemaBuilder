@@ -2,14 +2,14 @@
 
 namespace Davajlama\SchemaBuilder\Schema\Value;
 
-use Davajlama\SchemaBuilder\Schema\ValueInteraface;
+use Davajlama\SchemaBuilder\Schema\ValueInterface;
 
 /**
  * Description of ExpressionValue
  *
  * @author David Bittner <david.bittner@seznam.cz>
  */
-class ExpressionValue implements ValueInteraface
+class ExpressionValue implements ValueInterface
 {
     /** @var string */
     private $value;

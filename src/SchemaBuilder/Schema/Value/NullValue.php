@@ -2,14 +2,14 @@
 
 namespace Davajlama\SchemaBuilder\Schema\Value;
 
-use Davajlama\SchemaBuilder\Schema\ValueInteraface;
+use Davajlama\SchemaBuilder\Schema\ValueInterface;
 
 /**
  * Description of NullValue
  *
  * @author David Bittner <david.bittner@seznam.cz>
  */
-class NullValue implements ValueInteraface
+class NullValue implements ValueInterface
 {
     
     /**

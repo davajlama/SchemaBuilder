@@ -30,7 +30,7 @@ class CreateTableTest extends TestCase
         $table->createColumn('name', new VarcharType(255));
         
         $sql = 'CREATE TABLE `articles` (';
-        $sql .= '`id` int(11) NOT NULL AUTO_INCREMENT, ';
+        $sql .= '`id` INT(11) NOT NULL AUTO_INCREMENT, ';
         $sql .= '`name` VARCHAR(255) DEFAULT NULL, ';
         $sql .= 'PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
         

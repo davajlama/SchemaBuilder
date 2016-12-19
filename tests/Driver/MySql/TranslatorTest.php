@@ -84,7 +84,7 @@ class TranslatorTest extends TestCase
         $this->assertSame('VARCHAR(128)', $translator->transType(new VarcharType(128)));
         $this->assertSame('VARCHAR(255)', $translator->transType(new VarcharType(255)));
         
-        $this->assertSame('int(11)', $translator->transType(new IntegerType()));
+        $this->assertSame('INT(11)', $translator->transType(new IntegerType()));
         
         $this->assertSame('TEXT', $translator->transType(new TextType()));
         $this->assertSame('DATETIME', $translator->transType(new DateTimeType()));

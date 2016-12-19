@@ -2,14 +2,14 @@
 
 namespace Davajlama\SchemaBuilder\Schema\Value;
 
-use Davajlama\SchemaBuilder\Schema\ValueInteraface;
+use Davajlama\SchemaBuilder\Schema\ValueInterface;
 
 /**
  * Description of NumberValue
  *
  * @author David Bittner <david.bittner@seznam.cz>
  */
-class NumberValue implements ValueInteraface
+class NumberValue implements ValueInterface
 {
     /** @var int|float|double */
     private $value;

@@ -7,7 +7,7 @@ namespace Davajlama\SchemaBuilder\Test\Fixture;
  *
  * @author David Bittner <david.bittner@seznam.cz>
  */
-class FoobarValue implements \Davajlama\SchemaBuilder\Schema\ValueInteraface
+class FoobarValue implements \Davajlama\SchemaBuilder\Schema\ValueInterface
 {
     
     public function getValue()

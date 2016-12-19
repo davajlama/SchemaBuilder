@@ -83,7 +83,7 @@ class SchemaCreateTest extends TestCase
         
         // table articles
         $sql = 'CREATE TABLE `articles` (';
-        $sql .= '`id` int(11) NOT NULL AUTO_INCREMENT, ';
+        $sql .= '`id` INT(11) NOT NULL AUTO_INCREMENT, ';
         $sql .= '`title` VARCHAR(255) DEFAULT NULL, ';
         $sql .= '`content` TEXT DEFAULT NULL, ';
         $sql .= 'PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
@@ -94,7 +94,7 @@ class SchemaCreateTest extends TestCase
         
         // table users
         $sql = 'CREATE TABLE `users` (';
-        $sql .= '`id` int(11) NOT NULL AUTO_INCREMENT, ';
+        $sql .= '`id` INT(11) NOT NULL AUTO_INCREMENT, ';
         $sql .= '`username` VARCHAR(64) NOT NULL, ';
         $sql .= '`password` VARCHAR(64) NOT NULL, ';
         $sql .= 'PRIMARY KEY (`id`), ';
@@ -106,7 +106,7 @@ class SchemaCreateTest extends TestCase
         
         // table products
         $sql = 'CREATE TABLE `products` (';
-        $sql .= '`id` int(11) NOT NULL AUTO_INCREMENT, ';
+        $sql .= '`id` INT(11) NOT NULL AUTO_INCREMENT, ';
         $sql .= '`name` VARCHAR(255) DEFAULT \'New product #1\', ';
         $sql .= '`supplier` VARCHAR(64) NOT NULL DEFAULT \'Davajlama\', ';
         $sql .= 'PRIMARY KEY (`id`)) ENGINE=InnoDB DEFAULT CHARSET=utf8;';

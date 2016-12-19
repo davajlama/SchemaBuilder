@@ -2,14 +2,14 @@
 
 namespace Davajlama\SchemaBuilder\Schema\Value;
 
-use Davajlama\SchemaBuilder\Schema\ValueInteraface;
+use Davajlama\SchemaBuilder\Schema\ValueInterface;
 
 /**
  * Description of StringValue
  *
  * @author David Bittner <david.bittner@seznam.cz>
  */
-class StringValue implements ValueInteraface
+class StringValue implements ValueInterface
 {
     /** @var string */
     private $value;
