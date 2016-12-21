@@ -21,11 +21,11 @@ trait MySqlAdapterProviderTrait
      */
     protected function getAdapter()
     {
-        if($this->adapter === null) {
-            $host       = getenv('TESTHOST');
-            $username   = getenv('TESTUSER');
-            $schema     = getenv('TESTDB');
-            
+        $host       = getenv('TESTHOST');
+        $username   = getenv('TESTUSER');
+        $schema     = getenv('TESTDB');
+
+        if($this->adapter === null && $host && $username && $schema) {
             $dsn = "mysql:host=$host;dbname=$schema";
             
             $options = array(

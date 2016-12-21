@@ -203,6 +203,7 @@ class Generator
         foreach($table->getIndexes() as $index) {
             $name = $this->createIndexName($index->getColumns(), $index->isUnique());
             if(isset($indexesNames[$name]) || isset($transformed[$name])) {
+                $indexesNames[$name] = true;
                 continue;
             } else {
                 $list->addPatch($this->createIndex($table, $index));
