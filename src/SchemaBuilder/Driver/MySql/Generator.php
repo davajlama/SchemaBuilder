@@ -132,9 +132,10 @@ class Generator
         if($unique !== $column->isUnique()) {
             $changeUnique = true;
         }*/
-        
+
         $default = $row['Default'];
-        if($default !== $column->getDefault()->getValue()) {
+        // db returns NULL or STRING
+        if(($default === null && $default !== $column->getDefault()->getValue()) || ($default !== null && (string)$default !== (string)$column->getDefault()->getValue())) {
             $change = true;
         }
         
