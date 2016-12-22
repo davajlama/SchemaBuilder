@@ -5,6 +5,7 @@ namespace Davajlama\SchemaBuilder\Schema;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
 use Davajlama\SchemaBuilder\Schema\Type\TextType;
+use Davajlama\SchemaBuilder\Schema\Type\TinyIntType;
 use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
 
 /**
@@ -45,7 +46,15 @@ class Type
      */
     public static function dateTimeType()
     {
-        return new Type\DateTimeType();
+        return new DateTimeType();
+    }
+
+    /**
+     * @return TinyIntType
+     */
+    public static function tinyIntType()
+    {
+        return new TinyIntType();
     }
     
 }

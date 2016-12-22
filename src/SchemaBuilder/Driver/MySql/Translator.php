@@ -6,6 +6,7 @@ use Davajlama\SchemaBuilder\Schema\Column;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
 use Davajlama\SchemaBuilder\Schema\Type\TextType;
+use Davajlama\SchemaBuilder\Schema\Type\TinyIntType;
 use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
 use Davajlama\SchemaBuilder\Schema\TypeInterface;
 use Davajlama\SchemaBuilder\Schema\Value\ExpressionValue;
@@ -99,6 +100,8 @@ class Translator
         switch($class = get_class($type)) {
             case IntegerType::class : 
                 return 'INT(11)';
+            case TinyIntType::class :
+                return 'TINYINT(4)';
             case VarcharType::class : 
                 return "VARCHAR({$type->getLength()})";
             case TextType::class :

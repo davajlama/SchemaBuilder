@@ -6,6 +6,7 @@ use Davajlama\SchemaBuilder\Driver\MySql\Translator;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
 use Davajlama\SchemaBuilder\Schema\Type\TextType;
+use Davajlama\SchemaBuilder\Schema\Type\TinyIntType;
 use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
 use Davajlama\SchemaBuilder\Schema\Value\ExpressionValue;
 use Davajlama\SchemaBuilder\Schema\Value\NullValue;
@@ -75,9 +76,6 @@ class TranslatorTest extends TestCase
         $this->assertSame(') ENGINE=MyISAM DEFAULT CHARSET=utf8-bin;', $translator->transCreateTableFooter('MyISAM', 'utf8-bin'));
     }
     
-    /**
-     * @expectedException Exception
-     */
     public function testTransType()
     {
         $translator = new Translator();
@@ -85,16 +83,21 @@ class TranslatorTest extends TestCase
         $this->assertSame('VARCHAR(255)', $translator->transType(new VarcharType(255)));
         
         $this->assertSame('INT(11)', $translator->transType(new IntegerType()));
+        $this->assertSame('TINYINT(4)', $translator->transType(new TinyIntType()));
         
         $this->assertSame('TEXT', $translator->transType(new TextType()));
         $this->assertSame('DATETIME', $translator->transType(new DateTimeType()));
-        
-        $translator->transType(new FoobarType());
     }
-    
+
     /**
      * @expectedException Exception
      */
+    public function transTypeException()
+    {
+        $translator = new Translator();
+        $translator->transType(new FoobarType());
+    }
+    
     public function testTransDefaultValue()
     {
         $translator = new Translator();
@@ -109,7 +112,15 @@ class TranslatorTest extends TestCase
         $this->assertSame('DEFAULT CURRENT_TIMESTAMP()', $translator->transDefaultValue(new ExpressionValue('CURRENT_TIMESTAMP()')));
         
         $this->assertSame('DEFAULT NULL', $translator->transDefaultValue(new NullValue()));
-        
+    }
+
+    /**
+     * @expectedException Exception
+     */
+    public function transDefaultValueException()
+    {
+        $translator = new Translator();
         $translator->transDefaultValue(new FoobarValue());
     }
+    
 }
