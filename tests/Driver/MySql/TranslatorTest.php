@@ -5,6 +5,7 @@ namespace Davajlama\SchemaBuilder\Test\Driver\MySql;
 use Davajlama\SchemaBuilder\Driver\MySql\Translator;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
+use Davajlama\SchemaBuilder\Schema\Type\LongTextType;
 use Davajlama\SchemaBuilder\Schema\Type\TextType;
 use Davajlama\SchemaBuilder\Schema\Type\TinyIntType;
 use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
@@ -84,8 +85,10 @@ class TranslatorTest extends TestCase
         
         $this->assertSame('INT(11)', $translator->transType(new IntegerType()));
         $this->assertSame('TINYINT(4)', $translator->transType(new TinyIntType()));
+        $this->assertSame('TINYINT(1)', $translator->transType(new TinyIntType(1)));
         
         $this->assertSame('TEXT', $translator->transType(new TextType()));
+        $this->assertSame('LONGTEXT', $translator->transType(new LongTextType()));
         $this->assertSame('DATETIME', $translator->transType(new DateTimeType()));
     }
 

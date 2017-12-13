@@ -4,6 +4,7 @@ namespace Davajlama\SchemaBuilder\Schema;
 
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
+use Davajlama\SchemaBuilder\Schema\Type\LongTextType;
 use Davajlama\SchemaBuilder\Schema\Type\TextType;
 use Davajlama\SchemaBuilder\Schema\Type\TinyIntType;
 use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
@@ -30,7 +31,14 @@ class Type
     public static function textType()
     {
         return new TextType();
-        
+    }
+
+    /**
+     * @return LongTextType
+     */
+    public function longTextType()
+    {
+        return new LongTextType();
     }
 
     /**
@@ -50,11 +58,12 @@ class Type
     }
 
     /**
+     * @param int $length
      * @return TinyIntType
      */
-    public static function tinyIntType()
+    public static function tinyIntType($length = 4)
     {
-        return new TinyIntType();
+        return new TinyIntType($length);
     }
     
 }

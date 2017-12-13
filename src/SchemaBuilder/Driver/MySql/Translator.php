@@ -5,6 +5,7 @@ namespace Davajlama\SchemaBuilder\Driver\MySql;
 use Davajlama\SchemaBuilder\Schema\Column;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
+use Davajlama\SchemaBuilder\Schema\Type\LongTextType;
 use Davajlama\SchemaBuilder\Schema\Type\TextType;
 use Davajlama\SchemaBuilder\Schema\Type\TinyIntType;
 use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
@@ -101,11 +102,13 @@ class Translator
             case IntegerType::class : 
                 return 'INT(11)';
             case TinyIntType::class :
-                return 'TINYINT(4)';
+                return "TINYINT({$type->getLength()})";
             case VarcharType::class : 
                 return "VARCHAR({$type->getLength()})";
             case TextType::class :
                 return 'TEXT';
+            case LongTextType::class :
+                return 'LONGTEXT';
             case DateTimeType::class :
                 return 'DATETIME';
             default:

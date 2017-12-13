@@ -11,5 +11,24 @@ use Davajlama\SchemaBuilder\Schema\TypeInterface;
  */
 class TinyIntType implements TypeInterface
 {
+    /** @var int */
+    private $length;
+
+    /**
+     * TinyIntType constructor.
+     * @param int $length
+     */
+    public function __construct($length = 4)
+    {
+        $this->length = $length;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLength()
+    {
+        return $this->length;
+    }
 
 }
