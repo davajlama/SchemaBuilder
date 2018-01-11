@@ -2,6 +2,7 @@
 
 namespace Davajlama\SchemaBuilder\Schema;
 
+use Davajlama\SchemaBuilder\Schema\Type\BinaryType;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
 use Davajlama\SchemaBuilder\Schema\Type\LongTextType;
@@ -39,6 +40,15 @@ class Type
     public function longTextType()
     {
         return new LongTextType();
+    }
+
+    /**
+     * @param int $length
+     * @return BinaryType
+     */
+    public static function binaryType($length)
+    {
+        return new BinaryType($length);
     }
 
     /**
