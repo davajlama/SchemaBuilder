@@ -25,10 +25,29 @@ class Index
     {
         $this->unique = (bool)$unique;
     }
-    
+
+    /**
+     * @param string $name
+     * @param bool $asc
+     * @return self
+     */
     public function addColumn($name, $asc = true)
     {
         $this->columns[] = new IndexColumn($name, $asc);
+        return $this;
+    }
+
+    /**
+     * @param string[] $columns
+     * @param bool $asc
+     * @return self
+     */
+    public function addColumns(Array $columns, $asc = true)
+    {
+        foreach($columns as $column) {
+            $this->addColumn($column, $asc);
+        }
+
         return $this;
     }
     
