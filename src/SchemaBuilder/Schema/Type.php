@@ -3,6 +3,7 @@
 namespace Davajlama\SchemaBuilder\Schema;
 
 use Davajlama\SchemaBuilder\Schema\Type\BinaryType;
+use Davajlama\SchemaBuilder\Schema\Type\CharType;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
 use Davajlama\SchemaBuilder\Schema\Type\LongTextType;
@@ -24,6 +25,15 @@ class Type
     public static function varcharType($length)
     {
         return new VarcharType($length);
+    }
+
+    /**
+     * @param int $length
+     * @return CharType
+     */
+    public static function charType($length)
+    {
+        return new CharType($length);
     }
 
     /**

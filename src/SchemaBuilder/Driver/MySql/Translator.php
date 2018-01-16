@@ -4,6 +4,7 @@ namespace Davajlama\SchemaBuilder\Driver\MySql;
 
 use Davajlama\SchemaBuilder\Schema\Column;
 use Davajlama\SchemaBuilder\Schema\Type\BinaryType;
+use Davajlama\SchemaBuilder\Schema\Type\CharType;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
 use Davajlama\SchemaBuilder\Schema\Type\LongTextType;
@@ -106,6 +107,8 @@ class Translator
                 return "TINYINT({$type->getLength()})";
             case VarcharType::class : 
                 return "VARCHAR({$type->getLength()})";
+            case CharType::class :
+                return "CHAR({$type->getLength()})";
             case BinaryType::class :
                 return "BINARY({$type->getLength()})";
             case TextType::class :
