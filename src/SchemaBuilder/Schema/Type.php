@@ -47,7 +47,7 @@ class Type
     /**
      * @return LongTextType
      */
-    public function longTextType()
+    public static function longTextType()
     {
         return new LongTextType();
     }
