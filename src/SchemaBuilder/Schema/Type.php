@@ -5,6 +5,7 @@ namespace Davajlama\SchemaBuilder\Schema;
 use Davajlama\SchemaBuilder\Schema\Type\BinaryType;
 use Davajlama\SchemaBuilder\Schema\Type\CharType;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
+use Davajlama\SchemaBuilder\Schema\Type\DecimalType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
 use Davajlama\SchemaBuilder\Schema\Type\LongTextType;
 use Davajlama\SchemaBuilder\Schema\Type\TextType;
@@ -84,6 +85,16 @@ class Type
     public static function tinyIntType($length = 4)
     {
         return new TinyIntType($length);
+    }
+
+    /**
+     * @param int $maxDigits
+     * @param int $digits
+     * @return DecimalType
+     */
+    public static function decimalType($maxDigits, $digits = 0)
+    {
+        return new DecimalType($maxDigits, $digits);
     }
     
 }

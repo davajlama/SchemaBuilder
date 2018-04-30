@@ -6,6 +6,7 @@ use Davajlama\SchemaBuilder\Schema\Column;
 use Davajlama\SchemaBuilder\Schema\Type\BinaryType;
 use Davajlama\SchemaBuilder\Schema\Type\CharType;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
+use Davajlama\SchemaBuilder\Schema\Type\DecimalType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
 use Davajlama\SchemaBuilder\Schema\Type\LongTextType;
 use Davajlama\SchemaBuilder\Schema\Type\TextType;
@@ -105,6 +106,8 @@ class Translator
                 return 'INT(11)';
             case TinyIntType::class :
                 return "TINYINT({$type->getLength()})";
+            case DecimalType::class :
+                return "DECIMAL({$type->getMaxDigits()}, {$type->getDigits()})";
             case VarcharType::class : 
                 return "VARCHAR({$type->getLength()})";
             case CharType::class :
