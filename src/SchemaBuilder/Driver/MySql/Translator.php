@@ -107,7 +107,7 @@ class Translator
             case TinyIntType::class :
                 return "TINYINT({$type->getLength()})";
             case DecimalType::class :
-                return "DECIMAL({$type->getMaxDigits()}, {$type->getDigits()})";
+                return "DECIMAL({$type->getMaxDigits()},{$type->getDigits()})";
             case VarcharType::class : 
                 return "VARCHAR({$type->getLength()})";
             case CharType::class :

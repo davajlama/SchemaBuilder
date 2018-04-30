@@ -91,8 +91,8 @@ class TranslatorTest extends TestCase
         $this->assertSame('INT(11)', $translator->transType(new IntegerType()));
         $this->assertSame('TINYINT(4)', $translator->transType(new TinyIntType()));
         $this->assertSame('TINYINT(1)', $translator->transType(new TinyIntType(1)));
-        $this->assertSame('DECIMAL(10, 0)', $translator->transType(new DecimalType(10)));
-        $this->assertSame('DECIMAL(10, 2)', $translator->transType(new DecimalType(10, 2)));
+        $this->assertSame('DECIMAL(10,0)', $translator->transType(new DecimalType(10)));
+        $this->assertSame('DECIMAL(10,2)', $translator->transType(new DecimalType(10, 2)));
 
         $this->assertSame('TEXT', $translator->transType(new TextType()));
         $this->assertSame('LONGTEXT', $translator->transType(new LongTextType()));
