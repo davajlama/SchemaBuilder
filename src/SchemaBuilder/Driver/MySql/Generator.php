@@ -184,6 +184,7 @@ class Generator
         }
         
         $indexesNames = [];
+        $createIndexPatches = [];
         foreach($table->getColumns() as $column) {
             if($column->isPrimary()) {
                 $indexesNames['PRIMARY'] = true;
@@ -196,18 +197,18 @@ class Generator
                 } else {
                     $index = new \Davajlama\SchemaBuilder\Schema\Index(true);
                     $index->addColumn($column->getName());
-                    $list->addPatch($this->createIndex($table, $index));
+                    $createIndexPatches[] = $this->createIndex($table, $index);
                 }
             }
         }
-        
+
         foreach($table->getIndexes() as $index) {
             $name = $index->getName() ? $index->getName() : $this->createIndexName($index->getColumns(), $index->isUnique());
             if(isset($indexesNames[$name]) || isset($transformed[$name])) {
                 $indexesNames[$name] = true;
                 continue;
             } else {
-                $list->addPatch($this->createIndex($table, $index));
+                $createIndexPatches[] = $this->createIndex($table, $index);
                 $indexesNames[$name] = true;
             }
         }
@@ -217,6 +218,10 @@ class Generator
                 $query = "ALTER TABLE `{$table->getName()}` DROP INDEX `$name`;";
                 $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
             }
+        }
+
+        foreach($createIndexPatches as $patch) {
+            $list->addPatch($patch);
         }
         
         return $list;

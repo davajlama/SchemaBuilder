@@ -66,8 +66,33 @@ class AlterIndexTest extends \Davajlama\SchemaBuilder\Test\TestCase
         
         $this->assertTrue($patches instanceof \Davajlama\SchemaBuilder\PatchList);
         $this->assertSame(10, $patches->count());
-        
+
         $patch = $patches->first();
+        $sql = 'ALTER TABLE `users` DROP INDEX `unique_group_asc`;';
+        $this->assertSame($sql, $patch->getQuery());
+        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+
+        $patch = $patches->next();
+        $sql = 'ALTER TABLE `users` DROP INDEX `unique_password_asc`;';
+        $this->assertSame($sql, $patch->getQuery());
+        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+
+        $patch = $patches->next();
+        $sql = 'ALTER TABLE `users` DROP INDEX `index_role_asc`;';
+        $this->assertSame($sql, $patch->getQuery());
+        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+
+        $patch = $patches->next();
+        $sql = 'ALTER TABLE `users` DROP INDEX `index_email_asc_group_asc`;';
+        $this->assertSame($sql, $patch->getQuery());
+        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+
+        $patch = $patches->next();
+        $sql = 'ALTER TABLE `users` DROP INDEX `unique_group_asc_role_asc`;';
+        $this->assertSame($sql, $patch->getQuery());
+        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
+        
+        $patch = $patches->next();
         $sql = 'ALTER TABLE `users` ADD UNIQUE INDEX `unique_created_asc` (`created` ASC);';
         $this->assertSame($sql, $patch->getQuery());
         $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
@@ -89,31 +114,6 @@ class AlterIndexTest extends \Davajlama\SchemaBuilder\Test\TestCase
         
         $patch = $patches->next();
         $sql = 'ALTER TABLE `users` ADD INDEX `index_group_asc_role_asc` (`group` ASC, `role` ASC);';
-        $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
-        
-        $patch = $patches->next();
-        $sql = 'ALTER TABLE `users` DROP INDEX `unique_group_asc`;';
-        $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
-        
-        $patch = $patches->next();
-        $sql = 'ALTER TABLE `users` DROP INDEX `unique_password_asc`;';
-        $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
-        
-        $patch = $patches->next();
-        $sql = 'ALTER TABLE `users` DROP INDEX `index_role_asc`;';
-        $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
-        
-        $patch = $patches->next();
-        $sql = 'ALTER TABLE `users` DROP INDEX `index_email_asc_group_asc`;';
-        $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
-        
-        $patch = $patches->next();
-        $sql = 'ALTER TABLE `users` DROP INDEX `unique_group_asc_role_asc`;';
         $this->assertSame($sql, $patch->getQuery());
         $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
     }
