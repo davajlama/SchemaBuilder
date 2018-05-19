@@ -161,14 +161,14 @@ class SchemaTest extends TestCase
         $sql = 'ALTER TABLE `users` DROP COLUMN `name`;';
         $this->assertSame($sql, $patch->getQuery());
         $this->assertSame(Patch::BREAKABLE, $patch->getLevel());
-        
-        $patch = $patches->next();
-        $sql = 'ALTER TABLE `users` ADD UNIQUE INDEX `unique_lastname_asc` (`lastname` ASC);';
-        $this->assertSame($sql, $patch->getQuery());
-        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
-        
+
         $patch = $patches->next();
         $sql = 'ALTER TABLE `users` DROP INDEX `unique_password_asc`;';
+        $this->assertSame($sql, $patch->getQuery());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
+
+        $patch = $patches->next();
+        $sql = 'ALTER TABLE `users` ADD UNIQUE INDEX `unique_lastname_asc` (`lastname` ASC);';
         $this->assertSame($sql, $patch->getQuery());
         $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
         
