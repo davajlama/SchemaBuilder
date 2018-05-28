@@ -3,6 +3,7 @@
 namespace Davajlama\SchemaBuilder\Driver\MySql;
 
 use Davajlama\SchemaBuilder\Schema\Column;
+use Davajlama\SchemaBuilder\Schema\Type\BigIntType;
 use Davajlama\SchemaBuilder\Schema\Type\BinaryType;
 use Davajlama\SchemaBuilder\Schema\Type\CharType;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
@@ -106,6 +107,8 @@ class Translator
                 return 'INT(11)';
             case TinyIntType::class :
                 return "TINYINT({$type->getLength()})";
+            case BigIntType::class :
+                return "BIGINT({$type->getLength()})";
             case DecimalType::class :
                 return "DECIMAL({$type->getMaxDigits()},{$type->getDigits()})";
             case VarcharType::class : 

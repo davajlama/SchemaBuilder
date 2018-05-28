@@ -2,6 +2,7 @@
 
 namespace Davajlama\SchemaBuilder\Schema;
 
+use Davajlama\SchemaBuilder\Schema\Type\BigIntType;
 use Davajlama\SchemaBuilder\Schema\Type\BinaryType;
 use Davajlama\SchemaBuilder\Schema\Type\CharType;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
@@ -68,6 +69,15 @@ class Type
     public static function integerType()
     {
         return new IntegerType();
+    }
+
+    /**
+     * @param int $length
+     * @return BigIntType
+     */
+    public static function bigIntType($length = 11)
+    {
+        return new BigIntType($length);
     }
     
     /**
