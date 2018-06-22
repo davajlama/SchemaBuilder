@@ -1,6 +1,7 @@
 <?php
 
 namespace Davajlama\SchemaBuilder\Driver\MySql;
+use Davajlama\SchemaBuilder\Schema\Index;
 
 /**
  * Description of Generator
@@ -31,7 +32,9 @@ class Generator
         
         foreach($table->getColumns() as $column) {
             if($column->isUnique()) {
-                $name = $this->createIndexName([new \Davajlama\SchemaBuilder\Schema\IndexColumn($column->getName())], $column->isUnique());
+                $index = new Index($column->isUnique());
+                $index->addColumn($column->getName());
+                $name = $this->createIndexName($index);
                 $columns[] = $this->getTranslator()->transUniqueKey($name, $column->getName());
             }
         }
@@ -189,21 +192,22 @@ class Generator
             if($column->isPrimary()) {
                 $indexesNames['PRIMARY'] = true;
             }
-            
+
             if($column->isUnique()) {
-                $name = $this->createIndexName([new \Davajlama\SchemaBuilder\Schema\IndexColumn($column->getName())], true);
+                $index = new \Davajlama\SchemaBuilder\Schema\Index(true);
+                $index->addColumn($column->getName());
+
+                $name = $this->createIndexName($index);
                 if(isset($transformed[$name])) {
                     $indexesNames[$name] = true;
                 } else {
-                    $index = new \Davajlama\SchemaBuilder\Schema\Index(true);
-                    $index->addColumn($column->getName());
                     $createIndexPatches[] = $this->createIndex($table, $index);
                 }
             }
         }
 
         foreach($table->getIndexes() as $index) {
-            $name = $index->getName() ? $index->getName() : $this->createIndexName($index->getColumns(), $index->isUnique());
+            $name = $this->createIndexName($index);
             if(isset($indexesNames[$name]) || isset($transformed[$name])) {
                 $indexesNames[$name] = true;
                 continue;
@@ -223,18 +227,17 @@ class Generator
         foreach($createIndexPatches as $patch) {
             $list->addPatch($patch);
         }
-        
+
         return $list;
     }
     
     protected function createIndex(\Davajlama\SchemaBuilder\Schema\Table $table, \Davajlama\SchemaBuilder\Schema\Index $index)
     {
         $cols = [];
-        $name = $index->isUnique() ? 'unique' : 'index';
+        $name = $this->createIndexName($index);
+
         foreach($index->getColumns() as $column) {
             $order = $column->isASC() ? 'ASC' : 'DESC';
-            $name .= '_' . $column->getName() . '_' . strtolower($order);
-            
             $cols[] = "`{$column->getName()}` $order";
         }
 
@@ -246,10 +249,14 @@ class Generator
         return new \Davajlama\SchemaBuilder\Patch($sql, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
     }
     
-    protected function createIndexName(Array $columns, $unique)
+    protected function createIndexName(Index $index)
     {
-        $name = $unique ? 'unique' : 'index';
-        foreach($columns as $column) {
+        if($index->getName()) {
+            return $index->getName();
+        }
+
+        $name = $index->isUnique() ? 'unique' : 'index';
+        foreach($index->getColumns() as $column) {
             $order = $column->isASC() ? 'ASC' : 'DESC';
             $name .= '_' . $column->getName() . '_' . strtolower($order);
         }
