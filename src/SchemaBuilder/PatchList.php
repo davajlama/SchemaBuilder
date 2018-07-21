@@ -90,4 +90,20 @@ class PatchList implements IteratorAggregate, Countable
         return count($this->list);
     }
 
+    /**
+     * @param callable $callback
+     * @return PatchList
+     */
+    public function filter(callable $callback)
+    {
+        $list = new self();
+        foreach($this->list as $patch) {
+            if($callback($patch)) {
+                $list->addPatch($patch);
+            }
+        }
+
+        return $list;
+    }
+
 }

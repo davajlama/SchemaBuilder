@@ -66,7 +66,9 @@ class MySqlDriver implements DriverInterface
             $patches->addPatches($this->getGenerator()->createTablePatches($table));
             $patches->addPatches($this->getGenerator()->createIndexes($table));
         }
-        
+
+        $this->fillHashes($patches);
+
         return $patches;
     }
 
@@ -77,7 +79,29 @@ class MySqlDriver implements DriverInterface
     {
         $this->getAdapter()->query($patch->getQuery());
     }
-    
+
+    /**
+     * @param PatchList $list
+     */
+    protected function fillHashes(PatchList $list)
+    {
+        $stack = [];
+        foreach($list->toArray() as $patch) {
+            $hash = '';
+            do {
+                $hash = $this->makeHash($patch->getQuery(), $hash);
+            } while(array_key_exists($hash, $stack));
+
+            $stack[$hash] = true;
+            $patch->setHash($hash);
+        }
+    }
+
+    protected function makeHash($query, $hash = '')
+    {
+        return substr(sha1($query . $hash), 0, 10);
+    }
+
     /**
      * @return Generator
      */

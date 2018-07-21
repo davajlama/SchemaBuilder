@@ -18,6 +18,9 @@ class Patch
     /** @var int */
     private $level;
 
+    /** @var string */
+    private $hash;
+
     /**
      * @param string $query
      * @param int $level
@@ -42,6 +45,24 @@ class Patch
     public function getLevel()
     {
         return $this->level;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHash()
+    {
+        return $this->hash;
+    }
+
+    /**
+     * @param $hash
+     * @return $this
+     */
+    public function setHash($hash)
+    {
+        $this->hash = $hash;
+        return $this;
     }
 
 }
