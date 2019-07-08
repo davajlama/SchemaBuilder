@@ -2,6 +2,7 @@
 
 namespace Davajlama\SchemaBuilder;
 
+use Davajlama\SchemaBuilder\Schema\LogicException;
 use Davajlama\SchemaBuilder\Schema\Table;
 
 /**
@@ -20,7 +21,11 @@ class Schema
      */
     public function addTable(Table $table)
     {
-        $this->tables[] = $table;
+        if(array_key_exists($table->getName(), $this->tables)) {
+            throw new LogicException("Table with name [{$table->getName()}] already exits");
+        }
+
+        $this->tables[$table->getName()] = $table;
         return $this;
     }
     

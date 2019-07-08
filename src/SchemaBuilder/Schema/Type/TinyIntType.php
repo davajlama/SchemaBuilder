@@ -2,6 +2,7 @@
 
 namespace Davajlama\SchemaBuilder\Schema\Type;
 
+use Davajlama\SchemaBuilder\Schema\LogicException;
 use Davajlama\SchemaBuilder\Schema\TypeInterface;
 
 /**
@@ -20,6 +21,10 @@ class TinyIntType implements TypeInterface
      */
     public function __construct($length = 4)
     {
+        if($length < 1) {
+            throw new LogicException("Length cannot be lower than 1");
+        }
+
         $this->length = $length;
     }
 

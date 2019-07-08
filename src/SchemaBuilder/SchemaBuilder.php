@@ -25,7 +25,8 @@ class SchemaBuilder
     }
 
     /**
-     * @param SchemaatchList
+     * @param Schema $schema
+     * @return PatchList
      */
     public function buildSchemaPatches(Schema $schema)
     {
