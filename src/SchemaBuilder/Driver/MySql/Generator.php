@@ -118,11 +118,9 @@ class Generator
     
     protected function compareColumns($row, \Davajlama\SchemaBuilder\Schema\Column $column, \Davajlama\SchemaBuilder\Schema\Table $table)
     {
-        
         $list = new \Davajlama\SchemaBuilder\PatchList();
         
-        $changeUnique   = false;
-        $change         = false;
+        $change = false;
         
         $type = $row['Type'];
         if(strtolower($type) !== strtolower($this->getTranslator()->transType($column->getType()))) {
@@ -134,11 +132,6 @@ class Generator
             $change = true;
         }
         
-        /*$unique = $row['Key'] === 'UNI';
-        if($unique !== $column->isUnique()) {
-            $changeUnique = true;
-        }*/
-
         $default = $row['Default'];
         // db returns NULL or STRING
         if(($default === null && $default !== $column->getDefault()->getValue()) || ($default !== null && (string)$default !== (string)$column->getDefault()->getValue())) {
@@ -152,21 +145,7 @@ class Generator
             
             $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::BREAKABLE);
         }
-        
-        /*if($changeUnique) {
-            
-            $query = "ALTER TABLE `{$table->getName()}` ";
-            $name = $this->createIndexName([new \Davajlama\SchemaBuilder\Schema\IndexColumn($column->getName())], true);
-            if($column->isUnique()) {
-                $query .= "ADD UNIQUE INDEX `$name` (`{$column->getName()}`)";
-            } else {
-                $query .= "DROP INDEX `$name`";
-            }
-            
-            $query .= ";";
-            $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
-        }*/
-        
+
         return $list;
     }
     
