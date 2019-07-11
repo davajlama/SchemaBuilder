@@ -247,8 +247,8 @@ class Generator
 
         $existsPrimary = [];
         foreach($rawIndexes as $row) {
-           if($row->Key_name === 'PRIMARY') {
-               $existsPrimary[] = $row->Column_name;
+           if($row['Key_name'] === 'PRIMARY') {
+               $existsPrimary[] = $row['Column_name'];
            }
         }
 
@@ -272,7 +272,7 @@ class Generator
 
             if($needPrimary) {
                 $cols   = implode('`, `', $needPrimary);
-                $add    = "ALTER TABLE `devel_bezvakolo`.`test_test` ADD PRIMARY KEY (`{$cols}`);";
+                $add    = "ALTER TABLE `{$table->getName()}` ADD PRIMARY KEY (`{$cols}`);";
 
                 $patch = new Patch($add, Patch::NON_BREAKABLE);
                 $list->addPatch($patch);

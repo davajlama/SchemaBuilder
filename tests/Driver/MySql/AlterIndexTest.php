@@ -2,6 +2,11 @@
 
 namespace Davajlama\SchemaBuilder\Test\Driver\MySql;
 
+use Davajlama\SchemaBuilder\Driver\MySql\Generator;
+use Davajlama\SchemaBuilder\Patch;
+use Davajlama\SchemaBuilder\Schema\Table;
+use Davajlama\SchemaBuilder\Schema\Type;
+
 /**
  * Description of AlterIndexTest
  *
@@ -61,9 +66,7 @@ class AlterIndexTest extends \Davajlama\SchemaBuilder\Test\TestCase
         
         $generator  = new \Davajlama\SchemaBuilder\Driver\MySql\Generator();
         $patches    = $generator->alterIndexes($table, $rawIndexes);
-        
-        //var_dump($patches);exit;
-        
+
         $this->assertTrue($patches instanceof \Davajlama\SchemaBuilder\PatchList);
         $this->assertSame(10, $patches->count());
 
@@ -117,6 +120,60 @@ class AlterIndexTest extends \Davajlama\SchemaBuilder\Test\TestCase
         $this->assertSame($sql, $patch->getQuery());
         $this->assertSame(\Davajlama\SchemaBuilder\Patch::NON_BREAKABLE, $patch->getLevel());
     }
-    
+
+    public function testDropPrimaryIndex()
+    {
+        $table = new Table('users');
+        $table->createColumn('id1', Type::integerType());
+        $table->createColumn('id2', Type::integerType());
+        $table->createUniqueIndex()->addColumns(['id1', 'id2']);
+
+        $rawIndexes = [
+            ['Key_name' => 'PRIMARY', 'Non_unique' => 0, 'Column_name' => 'id1'],
+            ['Key_name' => 'PRIMARY', 'Non_unique' => 0, 'Column_name' => 'id2'],
+        ];
+
+        $generator = new Generator();
+        $patches    = $generator->alterIndexes($table, $rawIndexes);
+
+        $this->assertSame(2, $patches->count());
+
+        $patch = $patches->first();
+        $sql = 'ALTER TABLE `users` ADD UNIQUE INDEX `unique_id1_asc_id2_asc` (`id1` ASC, `id2` ASC);';
+        $this->assertSame($sql, $patch->getQuery());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
+
+        $patch = $patches->next();
+        $sql = 'ALTER TABLE `users` DROP PRIMARY KEY;';
+        $this->assertSame($sql, $patch->getQuery());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
+    }
+
+    public function testAddPrimaryIndex()
+    {
+        $table = new Table('users');
+        $table->createColumn('id1', Type::integerType())->primary();
+        $table->createColumn('id2', Type::integerType())->primary();
+
+        $rawIndexes = [
+            ['Key_name' => 'unique_id1_asc_id2_asc', 'Non_unique' => 0, 'Column_name' => 'id1'],
+            ['Key_name' => 'unique_id1_asc_id2_asc', 'Non_unique' => 0, 'Column_name' => 'id2'],
+        ];
+
+        $generator  = new Generator();
+        $patches    = $generator->alterIndexes($table, $rawIndexes);
+
+        $this->assertSame(2, $patches->count());
+
+        $patch = $patches->first();
+        $sql = 'ALTER TABLE `users` DROP INDEX `unique_id1_asc_id2_asc`;';
+        $this->assertSame($sql, $patch->getQuery());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
+
+        $patch = $patches->next();
+        $sql = 'ALTER TABLE `users` ADD PRIMARY KEY (`id1`, `id2`);';
+        $this->assertSame($sql, $patch->getQuery());
+        $this->assertSame(Patch::NON_BREAKABLE, $patch->getLevel());
+    }
     
 }
