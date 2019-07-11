@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<ruleset name="Davajlama">
+	<description>Davajlama coding standards</description>
+	
+	<file>./src</file>
+
+    <rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+	<rule ref="Generic.Arrays.DisallowLongArraySyntax"/>
+    <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
+    <rule ref="Generic.Formatting.NoSpaceAfterCast"/>
+	<rule ref="Generic.PHP.CharacterBeforePHPOpeningTag"/>
+	<rule ref="Generic.PHP.DeprecatedFunctions"/>
+	<rule ref="Generic.PHP.ForbiddenFunctions"/>    
+	<rule ref="Generic.PHP.LowerCaseKeyword"/>
+	<rule ref="Generic.PHP.LowerCaseConstant"/>
+	<rule ref="Generic.ControlStructures.InlineControlStructure"/>
+	<rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
+	<rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
+	<rule ref="Generic.Functions.CallTimePassByReference"/>
+	
+	<rule ref="PSR2.ControlStructures.ControlStructureSpacing"/>
+
+
+	<rule ref="Generic.NamingConventions.ConstructorName"/>	
+	<rule ref="Generic.Classes.DuplicateClassName"/>
+    
+    <rule ref="Generic.Strings.UnnecessaryStringConcat">
+		<properties>
+			<property name="allowMultiline" value="true"/>
+		</properties>
+	</rule>
+    <rule ref="Generic.CodeAnalysis.EmptyStatement">
+		<exclude name="Generic.CodeAnalysis.EmptyStatement.DetectedCATCH"/><!-- empty catch statements are allowed -->
+	</rule>
+
+	<rule ref="Squiz.WhiteSpace.SuperfluousWhitespace" />
+
+</ruleset>
