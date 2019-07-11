@@ -1,7 +1,10 @@
 <?php
 
 namespace Davajlama\SchemaBuilder\Driver\MySql;
+use Davajlama\SchemaBuilder\Patch;
+use Davajlama\SchemaBuilder\PatchList;
 use Davajlama\SchemaBuilder\Schema\Index;
+use Davajlama\SchemaBuilder\Schema\Table;
 
 /**
  * Description of Generator
@@ -218,7 +221,7 @@ class Generator
         }
         
         foreach($transformed as $name => $ind) {
-            if(!isset($indexesNames[$name])) {
+            if(!isset($indexesNames[$name]) && $name != 'PRIMARY') {
                 $query = "ALTER TABLE `{$table->getName()}` DROP INDEX `$name`;";
                 $list->createPatch($query, \Davajlama\SchemaBuilder\Patch::NON_BREAKABLE);
             }
@@ -228,9 +231,57 @@ class Generator
             $list->addPatch($patch);
         }
 
+        $list->addPatches($this->alterPrimaryIndex($rawIndexes, $table));
+
         return $list;
     }
-    
+
+    /**
+     * @param $rawIndexes
+     * @param Table $table
+     * @return PatchList
+     */
+    protected function alterPrimaryIndex($rawIndexes, Table $table)
+    {
+        $list = new PatchList();
+
+        $existsPrimary = [];
+        foreach($rawIndexes as $row) {
+           if($row->Key_name === 'PRIMARY') {
+               $existsPrimary[] = $row->Column_name;
+           }
+        }
+
+        $needPrimary = [];
+        foreach ($table->getColumns() as $column) {
+            if($column->isPrimary()) {
+                $needPrimary[] = $column->getName();
+            }
+        }
+
+        $intersect  = array_intersect($existsPrimary, $needPrimary);
+        $diff       = array_merge(array_diff($existsPrimary, $intersect), array_diff($needPrimary, $intersect));
+
+        if($diff) {
+            if($existsPrimary) {
+                $drop   = "ALTER TABLE `{$table->getName()}` DROP PRIMARY KEY;";
+                $patch  = new Patch($drop, Patch::NON_BREAKABLE);
+
+                $list->addPatch($patch);
+            }
+
+            if($needPrimary) {
+                $cols   = implode('`, `', $needPrimary);
+                $add    = "ALTER TABLE `devel_bezvakolo`.`test_test` ADD PRIMARY KEY (`{$cols}`);";
+
+                $patch = new Patch($add, Patch::NON_BREAKABLE);
+                $list->addPatch($patch);
+            }
+        }
+
+        return $list;
+    }
+
     protected function createIndex(\Davajlama\SchemaBuilder\Schema\Table $table, \Davajlama\SchemaBuilder\Schema\Index $index)
     {
         $cols = [];
