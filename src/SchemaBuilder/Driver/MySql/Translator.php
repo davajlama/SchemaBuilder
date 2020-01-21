@@ -3,6 +3,7 @@
 namespace Davajlama\SchemaBuilder\Driver\MySql;
 
 use Davajlama\SchemaBuilder\Schema\Column;
+use Davajlama\SchemaBuilder\Schema\Index;
 use Davajlama\SchemaBuilder\Schema\Type\BigIntType;
 use Davajlama\SchemaBuilder\Schema\Type\BinaryType;
 use Davajlama\SchemaBuilder\Schema\Type\CharType;
@@ -139,7 +140,6 @@ class Translator
             case StringValue::class : 
                 $expr = "'{$value->getValue()}'"; break;
             case NumberValue::class :
-                $expr = $value->getValue(); break;
             case ExpressionValue::class :
                 $expr = $value->getValue(); break;
             case NullValue::class :
@@ -150,10 +150,11 @@ class Translator
         
         return "DEFAULT $expr";
     }
-    
+
     /**
      * @param Column $column
      * @return string
+     * @throws Exception
      */
     public function transColumn(Column $column)
     {
@@ -170,5 +171,31 @@ class Translator
 
         return implode(' ', array_filter($parts));
     }
-    
+
+    public function transIndexName(Index $index)
+    {
+        $name = $index->isUnique() ? 'unique' : 'index';
+        foreach($index->getColumns() as $column) {
+            $order = $column->isASC() ? 'ASC' : 'DESC';
+            $name .= '_' . $column->getName() . '_' . strtolower($order);
+        }
+
+        if(strlen($name) < 64) {
+            return $name;
+        }
+
+        $name = $index->isUnique() ? 'u' : 'i';
+        foreach($index->getColumns() as $column) {
+            $parts = explode('_', $column->getName());
+            $parts = array_map(function($v){
+                $v = substr($v, 0,4);
+                $v = ucfirst($v);
+                return $v;
+            }, $parts);
+
+            $name .= implode($parts);
+        }
+
+        return $name;
+    }
 }

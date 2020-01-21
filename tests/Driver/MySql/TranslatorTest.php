@@ -3,6 +3,7 @@
 namespace Davajlama\SchemaBuilder\Test\Driver\MySql;
 
 use Davajlama\SchemaBuilder\Driver\MySql\Translator;
+use Davajlama\SchemaBuilder\Schema\Index;
 use Davajlama\SchemaBuilder\Schema\Type\BigIntType;
 use Davajlama\SchemaBuilder\Schema\Type\BinaryType;
 use Davajlama\SchemaBuilder\Schema\Type\CharType;
@@ -134,6 +135,25 @@ class TranslatorTest extends TestCase
     {
         $translator = new Translator();
         $translator->transDefaultValue(new FoobarValue());
+    }
+
+    public function testTransIndexName()
+    {
+        $translator = new Translator();
+
+        $shortUniqueIndex = new Index(true);
+        $shortUniqueIndex->addColumns(['id', 'product_id']);
+        $this->assertSame('unique_id_asc_product_id_asc', $translator->transIndexName($shortUniqueIndex));
+
+
+        $mediumUniqueIndex = new Index(true);
+        $mediumUniqueIndex->addColumns(['collection_name', 'collection_slug', 'collection_type']);
+        $this->assertSame('uCollNameCollSlugCollType', $translator->transIndexName($mediumUniqueIndex));
+
+
+        $longUniqueIndex = new Index(true);
+        $longUniqueIndex->addColumns($cols = ['id', 'name', 'description', 'note', 'time', 'age', 'contact', 'full', 'enabled']);
+        $this->assertSame("uIdNameDescNoteTimeAgeContFullEnab", $translator->transIndexName($longUniqueIndex));
     }
     
 }

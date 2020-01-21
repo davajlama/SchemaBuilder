@@ -285,13 +285,7 @@ class Generator
             return $index->getName();
         }
 
-        $name = $index->isUnique() ? 'unique' : 'index';
-        foreach($index->getColumns() as $column) {
-            $order = $column->isASC() ? 'ASC' : 'DESC';
-            $name .= '_' . $column->getName() . '_' . strtolower($order);
-        }
-        
-        return $name;
+        return $this->getTranslator()->transIndexName($index);
     }
     
     /**
