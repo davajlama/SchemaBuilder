@@ -6,10 +6,12 @@ use Davajlama\SchemaBuilder\Schema\Type\BigIntType;
 use Davajlama\SchemaBuilder\Schema\Type\BinaryType;
 use Davajlama\SchemaBuilder\Schema\Type\CharType;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
+use Davajlama\SchemaBuilder\Schema\Type\DateType;
 use Davajlama\SchemaBuilder\Schema\Type\DecimalType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
 use Davajlama\SchemaBuilder\Schema\Type\LongTextType;
 use Davajlama\SchemaBuilder\Schema\Type\TextType;
+use Davajlama\SchemaBuilder\Schema\Type\TimestampType;
 use Davajlama\SchemaBuilder\Schema\Type\TinyIntType;
 use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
 
@@ -86,6 +88,22 @@ class Type
     public static function dateTimeType()
     {
         return new DateTimeType();
+    }
+
+    /**
+     * @return DateType
+     */
+    public static function dateType()
+    {
+        return new DateType();
+    }
+
+    /**
+     * @return TimestampType
+     */
+    public static function timestampType()
+    {
+        return new TimestampType();
     }
 
     /**

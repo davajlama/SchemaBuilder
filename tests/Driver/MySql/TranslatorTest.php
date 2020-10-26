@@ -8,10 +8,12 @@ use Davajlama\SchemaBuilder\Schema\Type\BigIntType;
 use Davajlama\SchemaBuilder\Schema\Type\BinaryType;
 use Davajlama\SchemaBuilder\Schema\Type\CharType;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
+use Davajlama\SchemaBuilder\Schema\Type\DateType;
 use Davajlama\SchemaBuilder\Schema\Type\DecimalType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
 use Davajlama\SchemaBuilder\Schema\Type\LongTextType;
 use Davajlama\SchemaBuilder\Schema\Type\TextType;
+use Davajlama\SchemaBuilder\Schema\Type\TimestampType;
 use Davajlama\SchemaBuilder\Schema\Type\TinyIntType;
 use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
 use Davajlama\SchemaBuilder\Schema\Value\ExpressionValue;
@@ -100,7 +102,9 @@ class TranslatorTest extends TestCase
 
         $this->assertSame('TEXT', $translator->transType(new TextType()));
         $this->assertSame('LONGTEXT', $translator->transType(new LongTextType()));
+        $this->assertSame('DATE', $translator->transType(new DateType()));
         $this->assertSame('DATETIME', $translator->transType(new DateTimeType()));
+        $this->assertSame('TIMESTAMP', $translator->transType(new TimestampType()));
     }
 
     /**

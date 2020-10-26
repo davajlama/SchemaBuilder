@@ -8,10 +8,12 @@ use Davajlama\SchemaBuilder\Schema\Type\BigIntType;
 use Davajlama\SchemaBuilder\Schema\Type\BinaryType;
 use Davajlama\SchemaBuilder\Schema\Type\CharType;
 use Davajlama\SchemaBuilder\Schema\Type\DateTimeType;
+use Davajlama\SchemaBuilder\Schema\Type\DateType;
 use Davajlama\SchemaBuilder\Schema\Type\DecimalType;
 use Davajlama\SchemaBuilder\Schema\Type\IntegerType;
 use Davajlama\SchemaBuilder\Schema\Type\LongTextType;
 use Davajlama\SchemaBuilder\Schema\Type\TextType;
+use Davajlama\SchemaBuilder\Schema\Type\TimestampType;
 use Davajlama\SchemaBuilder\Schema\Type\TinyIntType;
 use Davajlama\SchemaBuilder\Schema\Type\VarcharType;
 use Davajlama\SchemaBuilder\Schema\TypeInterface;
@@ -124,6 +126,10 @@ class Translator
                 return 'LONGTEXT';
             case DateTimeType::class :
                 return 'DATETIME';
+            case DateType::class :
+                return 'DATE';
+            case TimestampType::class :
+                return 'TIMESTAMP';
             default:
                 throw new Exception("Unknown column type [$class]");
         }
