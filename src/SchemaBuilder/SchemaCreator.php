@@ -26,10 +26,18 @@ class SchemaCreator
     public function applyPatches(PatchList $patches)
     {
         foreach($patches->toArray() as $patch) {
-            $this->getDriver()->applyPatch($patch);
+            $this->applyPatch($patch);
         }
     }
-    
+
+    /**
+     * @param Patch $patch
+     */
+    public function applyPatch(Patch $patch)
+    {
+        $this->getDriver()->applyPatch($patch);
+    }
+
     /**
      * @return DriverInterface
      */
