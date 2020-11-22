@@ -2,6 +2,8 @@
 
 namespace Davajlama\SchemaBuilder\Schema;
 
+use Davajlama\SchemaBuilder\Schema\Value\ExpressionValue;
+
 /**
  * Description of Table
  *
@@ -104,7 +106,56 @@ class Table
                     ->primary()
                     ->autoincrement();
     }
-    
+
+    /**
+     * @param string $name
+     * @return Column
+     */
+    public function createDateTimeColumn(string $name)
+    {
+        return $this->createColumn($name, Type::dateTimeType())
+                    ->nullable(false)
+                    ->setDefaultValue(new ExpressionValue('current_timestamp()'));
+
+    }
+
+    /**
+     * @param string $name
+     * @param int $length
+     * @return Column
+     */
+    public function createVarcharColumn(string $name, int $length = 255)
+    {
+        return $this->createColumn($name, Type::varcharType($length));
+    }
+
+    /**
+     * @param string $name
+     * @return Column
+     */
+    public function createIntegerColumn(string $name)
+    {
+        return $this->createColumn($name, Type::integerType());
+    }
+
+    /**
+     * @param string $name
+     * @return Column
+     */
+    public function createTinyIntColumn(string $name)
+    {
+        return $this->createColumn($name, Type::tinyIntType());
+    }
+
+    /**
+     * @param string $name
+     * @return Column
+     */
+    public function createTextColumn(string $name)
+    {
+        return $this->createColumn($name, Type::textType());
+    }
+
     /**
      * @param Index $index
      * @return self
@@ -114,25 +165,26 @@ class Table
         $this->indexes[] = $index;
         return $this;
     }
-    
+
     /**
-     * @param bool $unique
+     * @param array $columns
+     * @param bool $asc
      * @return Index
      */
-    public function createIndex($unique = false)
+    public function createIndex(array $columns = [], bool $asc = true)
     {
-        $this->addIndex($index = new Index($unique));
-        return $index;
+        $this->addIndex($index = new Index(false));
+        return $index->addColumns($columns, $asc);
     }
     
     /**
      * @param string[] $columns
      * @return Index
      */
-    public function createUniqueIndex()
+    public function createUniqueIndex(array $columns = [], bool $asc = true)
     {
         $this->addIndex($index = new Index(true));
-        return $index;
+        return $index->addColumns($columns, $asc);
     }
     
     /**
