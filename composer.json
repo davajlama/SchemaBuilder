@@ -12,11 +12,5 @@
 
     "autoload": {
         "classmap": ["src/"]
-    },
-
-    "extra": {
-        "branch-alias": {
-            "dev-dev/master": "2.0.x-dev"
-        }
     }
 }
