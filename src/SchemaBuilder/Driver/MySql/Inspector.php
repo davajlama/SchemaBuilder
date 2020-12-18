@@ -49,6 +49,14 @@ class Inspector
         return $this->adapter->fetchAll("SHOW INDEX FROM `$table`");
     }
 
+    /**
+     * @return array
+     */
+    public function showTables()
+    {
+        return $this->getAdapter()->fetchAll('SHOW TABLES');
+    }
+
     protected function getAdapter()
     {
         return $this->adapter;

@@ -32,6 +32,7 @@ class SchemaCreateTest extends TestCase
             "DESCRIBE users",
             "SHOW TABLES LIKE 'products'",
             "DESCRIBE products",
+            "SHOW TABLES",
         ]))->will($this->multipleReturn()
                 ->ret("SHOW TABLES LIKE 'articles'", [])
                 ->ret("SHOW TABLES LIKE 'users'", [])
@@ -39,6 +40,7 @@ class SchemaCreateTest extends TestCase
                 ->ret("DESCRIBE articles", [])
                 ->ret("DESCRIBE users", [])
                 ->ret("DESCRIBE products", [])
+                ->ret("SHOW TABLES", [])
                 ->toCallback());
         
         $schema = new Schema();

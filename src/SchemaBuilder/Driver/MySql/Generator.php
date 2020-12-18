@@ -3,6 +3,7 @@
 namespace Davajlama\SchemaBuilder\Driver\MySql;
 use Davajlama\SchemaBuilder\Patch;
 use Davajlama\SchemaBuilder\PatchList;
+use Davajlama\SchemaBuilder\Schema;
 use Davajlama\SchemaBuilder\Schema\Index;
 use Davajlama\SchemaBuilder\Schema\Table;
 
@@ -53,7 +54,29 @@ class Generator
         
         return $list;
     }
-    
+
+    /**
+     * @param Schema $schema
+     * @param array $tables
+     * @return PatchList
+     */
+    public function dropTablePatches(Schema $schema, array $tables)
+    {
+        $myTables = [];
+        foreach($schema->getTables() as $table) {
+            $myTables[] = $table->getName();
+        }
+
+        $patches = new PatchList();
+        foreach($tables as $tableName) {
+            if(!in_array($tableName, $myTables)) {
+                $patches->addPatch(new Patch($this->getTranslator()->transDropTable($tableName), Patch::BREAKABLE));
+            }
+        }
+
+        return $patches;
+    }
+
     public function alterTablePatches(\Davajlama\SchemaBuilder\Schema\Table $table, Array $rawColumns)
     {
         $original = [];
@@ -148,7 +171,7 @@ class Generator
 
         return $list;
     }
-    
+
     public function createIndexes(\Davajlama\SchemaBuilder\Schema\Table $table)
     {
         $list = new \Davajlama\SchemaBuilder\PatchList();

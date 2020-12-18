@@ -45,7 +45,9 @@ class MySqlDriver implements DriverInterface
         foreach($schema->getTables() as $table) {
             $patches->addPatches($this->buildTablePatches($table));
         }
-        
+
+        $patches->addPatches($this->getGenerator()->dropTablePatches($schema, $this->getInspector()->showTables()));
+
         return $patches;
     }
 

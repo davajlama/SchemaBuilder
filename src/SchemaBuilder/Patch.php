@@ -9,6 +9,10 @@ namespace Davajlama\SchemaBuilder;
  */
 class Patch
 {
+    const CREATE    = 0;
+    const ALTER     = 1;
+    const DROP      = 2;
+
     const NON_BREAKABLE = 0;
     const BREAKABLE = 1;
     
